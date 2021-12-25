@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Numerics;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Vector2 = UnityEngine.Vector2;
+using Vector3 = System.Numerics.Vector3;
 
 public class Player : MonoBehaviour
 {
@@ -59,10 +62,26 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    #region SwordShotter
+
+
+    public GameObject shooterUp;
+    public GameObject shooterDown;
+    public GameObject shooterRight;
+    public GameObject shooterLeft;
+    
+    #endregion
+
     #region MonoBehaviour
 
     private void Awake()
     {
+         // BuildSwordShooter("up");
+         // BuildSwordShooter("down");
+         // BuildSwordShooter("right");
+         // BuildSwordShooter("left");
+
+
         currentItem = empty;
         Application.targetFrameRate = 70;
         _rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
@@ -84,6 +103,8 @@ public class Player : MonoBehaviour
             ultimate += Vector2.up;
         if (_downPressed)
             ultimate += Vector2.down;
+        
+      
 
 
         _longClicking = (_leftPressed | _rightPressed | _upPressed | _downPressed);
@@ -99,6 +120,45 @@ public class Player : MonoBehaviour
         _rigidbody2D.MovePosition(_rigidbody2D.position + size * ultimate);
     }
 
+    public void BuildSwordShooter(String direction)
+    {
+        
+        // var swordShooter = Instantiate(swordShooterPrefab, transform.position, transform.rotation);
+        //
+        //
+        //
+        // var newSwordShooterPosition = swordShooter.transform.position;
+        // var newSwordShooterRotation = swordShooter.transform.rotation;
+        // // var newSwordShooterRotation = transform.rotation;
+        // // newSwordShooterPosition.z += swordShooterDistance;
+        // if (direction == "left")
+        // {
+        //     newSwordShooterPosition.x -= swordShooterDistance;
+        //     swordShooter.transform.position = newSwordShooterPosition;
+        // }
+        //     
+        //
+        // if (direction == "right")
+        // {
+        //     newSwordShooterPosition.x += swordShooterDistance;
+        //     swordShooter.transform.position = newSwordShooterPosition;
+        //     newSwordShooterRotation.z = 180;
+        //     swordShooter.transform.rotation = newSwordShooterRotation;
+        // }
+
+        if (direction == "left")
+            shooterLeft.SetActive(true);
+        if (direction == "down")
+            shooterDown.SetActive(true);
+        if (direction == "right")
+            shooterRight.SetActive(true);
+        if (direction == "up")
+            shooterUp.SetActive(true);
+
+        // swordShooter.transform.parent = gameObject.transform;
+
+    }
+    
     private void Update()
     {
         _rigidbody2D.velocity = Vector2.zero;
@@ -106,6 +166,12 @@ public class Player : MonoBehaviour
         _rightPressed = Input.GetKey(KeyCode.RightArrow);
         _upPressed = Input.GetKey(KeyCode.UpArrow);
         _downPressed = Input.GetKey(KeyCode.DownArrow);
+
+        if (Input.GetButtonDown($"rotateLeft"))
+            RotatePlayer(1);
+
+        if (Input.GetButtonDown($"rotateRight"))
+            RotatePlayer(0);
 
 
         if (!_moveAfterTransfer)
@@ -470,6 +536,16 @@ public class Player : MonoBehaviour
         var newItemPosition = new Vector2(position.x + dX, position.y + dY);
         position = newItemPosition;
         currentItem.transform.position = position;
+    }
+
+    private void RotatePlayer(int rotateDirection)
+    {
+        var pZ = transform.rotation.z;
+        var angle = 90;
+        if (rotateDirection == 0)
+            angle *= -1;
+        pZ += angle;
+        transform.Rotate(0,0,angle);
     }
 
     #endregion

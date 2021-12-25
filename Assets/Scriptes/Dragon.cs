@@ -44,34 +44,33 @@ public class Dragon : MonoBehaviour
     public float timeToWait;
     private Vector2 _movement;
     public float moveSpeed;
-    
 
     #endregion
 
     #region Player attacking
 
+    public int health = 100;
     public bool dragonIsDead = false;
     public bool playerIsDead = false;
     private bool _mouthIsOpen = false;
 
     #endregion
-    
+
     #region status
 
     private int _currentStage = 0;
     private int _nextStage;
     private bool _changeState = false;
-    
 
     #endregion
-    
+
     #region Animation
 
     public float rotateFrom;
     private static readonly int Rotate1 = Animator.StringToHash("rotate");
 
     #endregion
-    
+
     #region MonoBehaviour
 
     private void Awake()
@@ -99,7 +98,6 @@ public class Dragon : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
         if (dragonIsDead) return;
 
         if (metPlayer)
@@ -161,17 +159,11 @@ public class Dragon : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        var nameO = other.gameObject.name;
-        CollisionAndTrigger(nameO);
+        if (other.gameObject.CompareTag("Player"))
+            CollisionAndTrigger("Player");
     }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        var nameO = other.gameObject.name;
-        CollisionAndTrigger(nameO);
-    }
-
-
+    
+    
     /**
      * Setting the right thing to do depends on which gameobjects the dragon
      * encounteras with.
@@ -272,6 +264,15 @@ public class Dragon : MonoBehaviour
 
         if (_currentStage == 2)
             dragonIsDead = true;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            CollisionAndTrigger("Sword");
+        }
     }
 
     #endregion

@@ -10,6 +10,7 @@ TagManager:
   - Grid
   - Trigger
   - Key
+  - Sword
   layers:
   - Default
   - TransparentFX
