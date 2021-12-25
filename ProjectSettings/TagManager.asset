@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Item
+  - moveThrow
+  - Dragon
+  - Grid
+  - Trigger
+  - Key
   layers:
   - Default
   - TransparentFX
@@ -11,16 +17,16 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Walls
+  - Player
+  - Dragons
+  - Triggers
+  - keys
+  - Gates
+  - Sword
+  - KillDragon
+  - Bridge
+  - Dead
   - 
   - 
   - 
