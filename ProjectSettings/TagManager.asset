@@ -11,6 +11,8 @@ TagManager:
   - Trigger
   - Key
   - Sword
+  - swordBonouse
+  - family
   layers:
   - Default
   - TransparentFX
@@ -28,7 +30,7 @@ TagManager:
   - KillDragon
   - Bridge
   - Dead
-  - 
+  - swordBonouse
   - 
   - 
   - 

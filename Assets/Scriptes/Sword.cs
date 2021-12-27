@@ -19,19 +19,15 @@ public class Sword : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Dragon dragon = other.GetComponent<Dragon>();
+        var dragon = other.GetComponent<Dragon>();
         if (dragon != null)
         {
             dragon.TakeDamage(damage);
         }
-
+        
+        print("kaka");
         Instantiate(impactEffect, transform.position, transform.rotation);
         Destroy(gameObject);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }

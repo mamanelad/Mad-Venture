@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
     public int curCamara;
 
     public readonly Color[] Colors = new[]
-        {Color.yellow, Color.green, Color.red, Color.blue, Color.black, Color.magenta};
+        {Color.yellow, Color.green, Color.red, Color.blue, Color.black, Color.magenta, Color.white};
 
     #endregion
 
@@ -37,6 +37,7 @@ public class Player : MonoBehaviour
 
     #region Movement
 
+    public GameObject moustache;
     public float timeToWaitAfterDragonAttack;
     public float size;
     public Vector2 direction;
@@ -50,6 +51,7 @@ public class Player : MonoBehaviour
     private bool _inSwordRoom = false;
     private float _movingTimer;
     private bool _longClicking = false;
+    
 
     #endregion
 
@@ -76,12 +78,6 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-         // BuildSwordShooter("up");
-         // BuildSwordShooter("down");
-         // BuildSwordShooter("right");
-         // BuildSwordShooter("left");
-
-
         currentItem = empty;
         Application.targetFrameRate = 70;
         _rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
@@ -123,40 +119,21 @@ public class Player : MonoBehaviour
     public void BuildSwordShooter(String direction)
     {
         
-        // var swordShooter = Instantiate(swordShooterPrefab, transform.position, transform.rotation);
-        //
-        //
-        //
-        // var newSwordShooterPosition = swordShooter.transform.position;
-        // var newSwordShooterRotation = swordShooter.transform.rotation;
-        // // var newSwordShooterRotation = transform.rotation;
-        // // newSwordShooterPosition.z += swordShooterDistance;
-        // if (direction == "left")
-        // {
-        //     newSwordShooterPosition.x -= swordShooterDistance;
-        //     swordShooter.transform.position = newSwordShooterPosition;
-        // }
-        //     
-        //
-        // if (direction == "right")
-        // {
-        //     newSwordShooterPosition.x += swordShooterDistance;
-        //     swordShooter.transform.position = newSwordShooterPosition;
-        //     newSwordShooterRotation.z = 180;
-        //     swordShooter.transform.rotation = newSwordShooterRotation;
-        // }
-
-        if (direction == "left")
-            shooterLeft.SetActive(true);
-        if (direction == "down")
-            shooterDown.SetActive(true);
-        if (direction == "right")
-            shooterRight.SetActive(true);
-        if (direction == "up")
-            shooterUp.SetActive(true);
-
-        // swordShooter.transform.parent = gameObject.transform;
-
+        switch (direction)
+        {
+            case "SwordLeft":
+                shooterLeft.SetActive(true);
+                break;
+            case "SwordDown":
+                shooterDown.SetActive(true);
+                break;
+            case "SwordRight":
+                shooterRight.SetActive(true);
+                break;
+            case "SwordUp":
+                shooterUp.SetActive(true);
+                break;
+        }
     }
     
     private void Update()
@@ -362,6 +339,14 @@ public class Player : MonoBehaviour
                 color = 1;
                 break;
             }
+            
+            case "triggerGreenGreen3":
+            {
+                flag = true;
+                curCamara = myPositionX >= otherPositionX ? 14 : 3;
+                color = 1;
+                break;
+            }
             case "triggerGreenRed":
             {
                 flag = true;
@@ -440,6 +425,86 @@ public class Player : MonoBehaviour
 
                 break;
             }
+            
+            
+            
+            
+            case "triggerWhite1":
+                flag = true;
+                curCamara = myPositionY <= otherPositionY ? 15 : 16;
+                color = 6;
+                break;
+            
+            case "triggerWhite2":
+                flag = true;
+                curCamara = myPositionY <= otherPositionY ? 17 : 18;
+                color = 6;
+                break;
+            
+            case "triggerWhite3":
+                flag = true;
+                curCamara = myPositionX <= otherPositionX ? 17 : 15;
+                color = 6;
+                break;
+            
+            case "triggerWhite4":
+                flag = true;
+                curCamara = myPositionX <= otherPositionX ? 18 : 16;
+                color = 6;
+                break;
+            
+            case "triggerWhiteBoss":
+                flag = true;
+                curCamara = myPositionY <= otherPositionY ? 19 : 17;
+                color = 6;
+                break;
+            
+            case "triggerGreenRed1":
+            {
+                flag = true;
+                if (myPositionY <= otherPositionY)
+                {
+                    curCamara = 20;
+                    color = 1;
+                }
+                else
+                {
+                    curCamara = 21;
+                    color = 2;
+                }
+
+                break;
+            }
+            
+            case "triggerRed1":
+            {
+                color = 2;
+                flag = true;
+                curCamara = myPositionY <= otherPositionY ? 21 : 22;
+                break;
+            }
+            
+            case "triggerRed2":
+            {
+                color = 2;
+                flag = true;
+                curCamara = myPositionY <= otherPositionY ? 24 : 23;
+                break;
+            }
+            
+            case "triggerRed3":
+                flag = true;
+                curCamara = myPositionX <= otherPositionX ? 24 : 21;
+                color = 2;
+                break;
+            
+            case "triggerRed4":
+                flag = true;
+                curCamara = myPositionX <= otherPositionX ? 23 : 22;
+                color = 2;
+                break;
+            
+          
         }
 
 
@@ -540,12 +605,13 @@ public class Player : MonoBehaviour
 
     private void RotatePlayer(int rotateDirection)
     {
-        var pZ = transform.rotation.z;
+        moustache.transform.parent = null;
         var angle = 90;
         if (rotateDirection == 0)
             angle *= -1;
-        pZ += angle;
         transform.Rotate(0,0,angle);
+        moustache.transform.parent = gameObject.transform;
+
     }
 
     #endregion

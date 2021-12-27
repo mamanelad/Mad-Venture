@@ -66,6 +66,7 @@ public class Dragon : MonoBehaviour
 
     #region Animation
 
+    public GameObject poof;
     public float rotateFrom;
     private static readonly int Rotate1 = Animator.StringToHash("rotate");
 
@@ -98,7 +99,8 @@ public class Dragon : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (dragonIsDead) return;
+        if (dragonIsDead)
+            killDragon();
 
         if (metPlayer)
             Rotate();
@@ -112,6 +114,13 @@ public class Dragon : MonoBehaviour
         if (_changeState)
             StartCoroutine(WaitToStateChange(timeToWait));
     }
+
+    private void killDragon()
+    {
+        
+        
+    }
+    
 
 
     /**
@@ -225,7 +234,6 @@ public class Dragon : MonoBehaviour
         _currentStage = 1;
         _nextStage = 0;
         _mouthCollider.enabled = false;
-        // _mouthTriggerMode = false;
         _changeState = true;
         _returnMovement = true;
     }

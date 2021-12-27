@@ -83,7 +83,6 @@ public class GameManager : MonoBehaviour
     {
         _shared.sounds[num].Play();
         if (num != 3) return;
-        // The finish game sound was called
         _shared._exitGame = true;
         var animator = _shared.swordRoom.GetComponent<Animator>();
         animator.SetTrigger(SwitchColor);
@@ -100,8 +99,11 @@ public class GameManager : MonoBehaviour
             case 1:
                 _shared.yellowSwordRoom.Invoke();
                 _shared.openGateYellow.Invoke();
-                if (_shared.player.currentItem.name == "Trophy")
+                if (_shared.player.currentItem.CompareTag("family"))
                     PlaySound(3);
+                
+                // if (_shared.player.currentItem.name == "Trophy")
+                //     PlaySound(3);
                 break;
             case 12:
                 _shared.blackTrophyRoom.Invoke();

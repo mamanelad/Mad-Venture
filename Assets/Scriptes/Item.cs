@@ -40,8 +40,10 @@ public class Item : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
         GameManager.PlaySound(0);
-        if (_itemName == "Trophy")
+        if (gameObject.CompareTag("family"))
             GameManager.ItemsBlinking(true);
+        // if (_itemName == "Trophy")
+        //     GameManager.ItemsBlinking(true);
 
         ReleaseItem();
         player.withItem = true;
@@ -65,8 +67,11 @@ public class Item : MonoBehaviour
         var currentItem = player.currentItem.gameObject;
         foreach (var item in gameManager.items)
         {
-            if (currentItem.name == "Trophy")
+            if (currentItem.CompareTag("family"))
                 GameManager.ItemsBlinking(false);
+            //
+            // if (currentItem.name == "Trophy")
+            //     GameManager.ItemsBlinking(false);
 
             currentItem.GetComponent<HingeJoint2D>().enabled = false;
             currentItem.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
