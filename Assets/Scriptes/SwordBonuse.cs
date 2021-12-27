@@ -27,7 +27,7 @@ public class SwordBonuse : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         var player = other.gameObject.GetComponent<Player>();
-        player.BuildSwordShooter(_name);
+        player.BuildSwordShooter();
         //TODO : call some animation and when animation is finise. 
         Destroy(gameObject);
 

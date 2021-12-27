@@ -25,7 +25,7 @@ public class Sword : MonoBehaviour
             dragon.TakeDamage(damage);
         }
         
-        print("kaka");
+        
         Instantiate(impactEffect, transform.position, transform.rotation);
         Destroy(gameObject);
     }

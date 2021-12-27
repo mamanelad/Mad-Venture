@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 575c8928919d5034bb6e63e2b5367c7b
+guid: ef429f65b2f463e41aa1b70ca5b6451c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 56405453324043922
-    second: pixil-frame-0 (5)_0
+      213: -3753825769889500098
+    second: sword_0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -44,13 +44,13 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
-  spriteExtrude: 1
+  spriteMode: 1
+  spriteExtrude: 3
   spriteMeshType: 1
-  alignment: 0
-  spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 600
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  alignment: 9
+  spritePivot: {x: 0.608, y: 0.52}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 353, y: 366, z: 290, w: 331}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -94,22 +94,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pixil-frame-0 (5)_0
+      name: sword_0
       rect:
         serializedVersion: 2
-        x: 480
-        y: 560
-        width: 400
-        height: 400
+        x: 360
+        y: 372
+        width: 108
+        height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 29646c0067468c000800000000000000
-      internalID: 56405453324043922
+      spriteID: e347705d95bb7ebc0800000000000000
+      internalID: -3753825769889500098
       vertices: []
       indices: 
       edges: []

@@ -51,7 +51,6 @@ public class Player : MonoBehaviour
     private bool _inSwordRoom = false;
     private float _movingTimer;
     private bool _longClicking = false;
-    
 
     #endregion
 
@@ -66,12 +65,8 @@ public class Player : MonoBehaviour
 
     #region SwordShotter
 
+    public GameObject shooter;
 
-    public GameObject shooterUp;
-    public GameObject shooterDown;
-    public GameObject shooterRight;
-    public GameObject shooterLeft;
-    
     #endregion
 
     #region MonoBehaviour
@@ -91,6 +86,8 @@ public class Player : MonoBehaviour
         if (!_canMove) return;
         var ultimate = Vector2.zero;
 
+       
+        
         if (_leftPressed)
             ultimate += Vector2.left;
         if (_rightPressed)
@@ -99,9 +96,6 @@ public class Player : MonoBehaviour
             ultimate += Vector2.up;
         if (_downPressed)
             ultimate += Vector2.down;
-        
-      
-
 
         _longClicking = (_leftPressed | _rightPressed | _upPressed | _downPressed);
         var oldTimer = _movingTimer;
@@ -116,39 +110,33 @@ public class Player : MonoBehaviour
         _rigidbody2D.MovePosition(_rigidbody2D.position + size * ultimate);
     }
 
-    public void BuildSwordShooter(String direction)
+    public void BuildSwordShooter()
     {
-        
-        switch (direction)
-        {
-            case "SwordLeft":
-                shooterLeft.SetActive(true);
-                break;
-            case "SwordDown":
-                shooterDown.SetActive(true);
-                break;
-            case "SwordRight":
-                shooterRight.SetActive(true);
-                break;
-            case "SwordUp":
-                shooterUp.SetActive(true);
-                break;
-        }
+        shooter.SetActive(true);
     }
-    
+
     private void Update()
     {
         _rigidbody2D.velocity = Vector2.zero;
-        _leftPressed = Input.GetKey(KeyCode.LeftArrow);
-        _rightPressed = Input.GetKey(KeyCode.RightArrow);
-        _upPressed = Input.GetKey(KeyCode.UpArrow);
-        _downPressed = Input.GetKey(KeyCode.DownArrow);
+       
 
-        if (Input.GetButtonDown($"rotateLeft"))
-            RotatePlayer(1);
+        _leftPressed = Input.GetKey(KeyCode.A);
+        // _leftPressed = Input.GetKey(KeyCode.LeftArrow);
+        _rightPressed = Input.GetKey(KeyCode.D);
 
-        if (Input.GetButtonDown($"rotateRight"))
-            RotatePlayer(0);
+        // _rightPressed = Input.GetKey(KeyCode.RightArrow);
+        _upPressed = Input.GetKey(KeyCode.W);
+
+        // _upPressed = Input.GetKey(KeyCode.UpArrow);
+        _downPressed = Input.GetKey(KeyCode.S);
+
+        // _downPressed = Input.GetKey(KeyCode.DownArrow);
+
+        // if (Input.GetButtonDown($"rotateLeft"))
+        //     RotatePlayer(1);
+        //
+        // if (Input.GetButtonDown($"rotateRight"))
+        //     RotatePlayer(0);
 
 
         if (!_moveAfterTransfer)
@@ -265,7 +253,7 @@ public class Player : MonoBehaviour
             {
                 gameObject.layer = 14;
                 _rigidbody2D.constraints =
-                    RigidbodyConstraints2D.FreezePositionX  | RigidbodyConstraints2D.FreezeRotation;
+                    RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
             }
         }
 
@@ -339,7 +327,7 @@ public class Player : MonoBehaviour
                 color = 1;
                 break;
             }
-            
+
             case "triggerGreenGreen3":
             {
                 flag = true;
@@ -425,40 +413,38 @@ public class Player : MonoBehaviour
 
                 break;
             }
-            
-            
-            
-            
+
+
             case "triggerWhite1":
                 flag = true;
                 curCamara = myPositionY <= otherPositionY ? 15 : 16;
                 color = 6;
                 break;
-            
+
             case "triggerWhite2":
                 flag = true;
                 curCamara = myPositionY <= otherPositionY ? 17 : 18;
                 color = 6;
                 break;
-            
+
             case "triggerWhite3":
                 flag = true;
                 curCamara = myPositionX <= otherPositionX ? 17 : 15;
                 color = 6;
                 break;
-            
+
             case "triggerWhite4":
                 flag = true;
                 curCamara = myPositionX <= otherPositionX ? 18 : 16;
                 color = 6;
                 break;
-            
+
             case "triggerWhiteBoss":
                 flag = true;
                 curCamara = myPositionY <= otherPositionY ? 19 : 17;
                 color = 6;
                 break;
-            
+
             case "triggerGreenRed1":
             {
                 flag = true;
@@ -475,7 +461,7 @@ public class Player : MonoBehaviour
 
                 break;
             }
-            
+
             case "triggerRed1":
             {
                 color = 2;
@@ -483,7 +469,7 @@ public class Player : MonoBehaviour
                 curCamara = myPositionY <= otherPositionY ? 21 : 22;
                 break;
             }
-            
+
             case "triggerRed2":
             {
                 color = 2;
@@ -491,20 +477,18 @@ public class Player : MonoBehaviour
                 curCamara = myPositionY <= otherPositionY ? 24 : 23;
                 break;
             }
-            
+
             case "triggerRed3":
                 flag = true;
                 curCamara = myPositionX <= otherPositionX ? 24 : 21;
                 color = 2;
                 break;
-            
+
             case "triggerRed4":
                 flag = true;
                 curCamara = myPositionX <= otherPositionX ? 23 : 22;
                 color = 2;
                 break;
-            
-          
         }
 
 
@@ -603,16 +587,15 @@ public class Player : MonoBehaviour
         currentItem.transform.position = position;
     }
 
-    private void RotatePlayer(int rotateDirection)
-    {
-        moustache.transform.parent = null;
-        var angle = 90;
-        if (rotateDirection == 0)
-            angle *= -1;
-        transform.Rotate(0,0,angle);
-        moustache.transform.parent = gameObject.transform;
-
-    }
+    // private void RotatePlayer(int rotateDirection)
+    // {
+    //     moustache.transform.parent = null;
+    //     var angle = 90;
+    //     if (rotateDirection == 0)
+    //         angle *= -1;
+    //     transform.Rotate(0, 0, angle);
+    //     moustache.transform.parent = gameObject.transform;
+    // }
 
     #endregion
 }
