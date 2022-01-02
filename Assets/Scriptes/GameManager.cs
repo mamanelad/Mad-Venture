@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
     public AudioSource[] sounds;
     public Tilemap tilemap;
 
+    private int _familyNum = 0;
     #endregion
 
     #region MonoBehaviour
@@ -83,9 +84,15 @@ public class GameManager : MonoBehaviour
     {
         _shared.sounds[num].Play();
         if (num != 3) return;
-        _shared._exitGame = true;
-        var animator = _shared.swordRoom.GetComponent<Animator>();
-        animator.SetTrigger(SwitchColor);
+        _shared._familyNum += 1;
+        if (_shared._familyNum == 3)
+        {
+            _shared._exitGame = true;
+            var animator = _shared.swordRoom.GetComponent<Animator>();
+            animator.SetTrigger(SwitchColor);
+            
+        }
+        
     }
 
     /**
@@ -159,6 +166,7 @@ public class GameManager : MonoBehaviour
      */
     public static void DragonReturnNormal()
     {
+        
         _shared.dragonBackToNormal.Invoke();
     }
 

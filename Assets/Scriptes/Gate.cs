@@ -13,14 +13,16 @@ public class Gate : MonoBehaviour
     public GameObject goodKey;
     public Animator gateAnimator;
     public int numGate;
-
+    public bool gateIsOpen = false;
+    public Triggers trigger;
+    
     #endregion
 
     #region private Fields
 
     private static readonly int CloseGate = Animator.StringToHash("closeGate");
     private static readonly int OpenGate = Animator.StringToHash("openGate");
-    private bool _gateIsOpen = false;
+    
     private bool _animationFinish = true;
 
     #endregion
@@ -37,13 +39,13 @@ public class Gate : MonoBehaviour
 
     public void SetGateOpen()
     {
-        _gateIsOpen = true;
+        gateIsOpen = true;
         _animationFinish = true;
     }
 
     public void SetGateClose()
     {
-        _gateIsOpen = false;
+        gateIsOpen = false;
         _animationFinish = true;
     }
 
@@ -52,7 +54,7 @@ public class Gate : MonoBehaviour
      */
     private void GateAnimation()
     {
-        gateAnimator.SetTrigger(_gateIsOpen ? CloseGate : OpenGate);
+        gateAnimator.SetTrigger(gateIsOpen ? CloseGate : OpenGate);
     }
 
     /**
@@ -61,9 +63,10 @@ public class Gate : MonoBehaviour
      */
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Player") & _gateIsOpen)
+        if (other.gameObject.CompareTag("Player") & gateIsOpen)
         {
-            GameManager.SwitchCamara(numGate == 1 ? 12 : 1);
+            SetGateOpen();
+            trigger.playerIsOverlapping = true;
         }
     }
 
@@ -75,7 +78,7 @@ public class Gate : MonoBehaviour
         var position = gateTrigger.transform.position;
         var temp = position.y;
         gateAnimator.SetTrigger(OpenGate);
-        _gateIsOpen = true;
+        gateIsOpen = true;
     }
 
     #endregion

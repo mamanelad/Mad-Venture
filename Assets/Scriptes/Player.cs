@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Numerics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Vector2 = UnityEngine.Vector2;
@@ -16,7 +17,7 @@ public class Player : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public int color = 0;
     public GameObject[] mazeTriggers;
-    private Rigidbody2D _rigidbody2D;
+    public Rigidbody2D rigidbody2D;
     public int curCamara;
 
     public readonly Color[] Colors = new[]
@@ -25,7 +26,7 @@ public class Player : MonoBehaviour
     #endregion
 
     #region Eating by a Dragon
-
+    
     private float _gotInSideMouthTimer = 0;
     private float _continuumTimeInMouthTimer;
     private bool _gotInSideMouth = false;
@@ -37,12 +38,13 @@ public class Player : MonoBehaviour
 
     #region Movement
 
+    public bool playerIsLock;
     public GameObject moustache;
     public float timeToWaitAfterDragonAttack;
     public float size;
     public Vector2 direction;
     public float slowPlayer;
-    private bool _canMove = true;
+    public bool canMove = true;
     private bool _leftPressed;
     private bool _rightPressed;
     private bool _upPressed;
@@ -69,25 +71,30 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    #region Animation
+
+    private Animator _moustacheAnimator;
+
+    #endregion
+
     #region MonoBehaviour
 
     private void Awake()
     {
         currentItem = empty;
         Application.targetFrameRate = 70;
-        _rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
-        size = _rigidbody2D.transform.localScale.x / 2;
+        rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
+        size = rigidbody2D.transform.localScale.x / 2;
         spriteRenderer.color = Colors[color];
         gameManager.tilemap.color = Colors[color];
+        _moustacheAnimator = gameObject.GetComponentInChildren<Animator>();
     }
 
     private void FixedUpdate()
     {
-        if (!_canMove) return;
+        if (!canMove) return;
         var ultimate = Vector2.zero;
 
-       
-        
         if (_leftPressed)
             ultimate += Vector2.left;
         if (_rightPressed)
@@ -100,15 +107,27 @@ public class Player : MonoBehaviour
         _longClicking = (_leftPressed | _rightPressed | _upPressed | _downPressed);
         var oldTimer = _movingTimer;
         if (_longClicking)
+        {
             _movingTimer += Time.deltaTime;
+
+        }
+
         else
+        {
             _movingTimer = 0;
+        }
+            
 
         direction = ultimate;
         if (!(oldTimer == 0 | _movingTimer >= slowPlayer)) return;
         _movingTimer = 0.001f;
-        _rigidbody2D.MovePosition(_rigidbody2D.position + size * ultimate);
+        
+        rigidbody2D.MovePosition(rigidbody2D.position + size * ultimate);
+        
+       
     }
+    
+    
 
     public void BuildSwordShooter()
     {
@@ -117,26 +136,19 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        _rigidbody2D.velocity = Vector2.zero;
+
+        
+        // if (!canMove) return;
+        _moustacheAnimator.SetBool("mustachRotate", _longClicking);
+
+
+        rigidbody2D.velocity = Vector2.zero;
        
 
         _leftPressed = Input.GetKey(KeyCode.A);
-        // _leftPressed = Input.GetKey(KeyCode.LeftArrow);
         _rightPressed = Input.GetKey(KeyCode.D);
-
-        // _rightPressed = Input.GetKey(KeyCode.RightArrow);
         _upPressed = Input.GetKey(KeyCode.W);
-
-        // _upPressed = Input.GetKey(KeyCode.UpArrow);
         _downPressed = Input.GetKey(KeyCode.S);
-
-        // _downPressed = Input.GetKey(KeyCode.DownArrow);
-
-        // if (Input.GetButtonDown($"rotateLeft"))
-        //     RotatePlayer(1);
-        //
-        // if (Input.GetButtonDown($"rotateRight"))
-        //     RotatePlayer(0);
 
 
         if (!_moveAfterTransfer)
@@ -166,7 +178,7 @@ public class Player : MonoBehaviour
             _gotInSideMouth = false;
         }
 
-        if (!_canMove)
+        if (!canMove)
             StartCoroutine(Wait(timeToWaitAfterDragonAttack));
     }
 
@@ -181,8 +193,8 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Dragon") & _canMove)
-            _canMove = false;
+        if (other.gameObject.CompareTag("Dragon") & canMove)
+            canMove = false;
     }
 
     /**
@@ -191,8 +203,8 @@ public class Player : MonoBehaviour
     private IEnumerator Wait(float timeToWait)
     {
         yield return new WaitForSeconds(timeToWait);
-        if (!_canMove)
-            _canMove = true;
+        if (!canMove)
+            canMove = true;
     }
 
 
@@ -252,7 +264,7 @@ public class Player : MonoBehaviour
             if (!withMoveThrow)
             {
                 gameObject.layer = 14;
-                _rigidbody2D.constraints =
+                rigidbody2D.constraints =
                     RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
             }
         }
@@ -281,7 +293,7 @@ public class Player : MonoBehaviour
         if (other.gameObject.CompareTag("moveThrow"))
         {
             gameObject.layer = 7;
-            _rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
+            rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
 
@@ -542,7 +554,7 @@ public class Player : MonoBehaviour
         }
 
 
-        _rigidbody2D.position = new Vector2(newX, newY) + (direction.normalized);
+        rigidbody2D.position = new Vector2(newX, newY) + (direction.normalized);
 
         if (withItem)
         {
@@ -570,15 +582,15 @@ public class Player : MonoBehaviour
         var dragonBallyPosition0 = dragonBalys[0].transform.position;
         var dragonBallyPosition1 = dragonBalys[1].transform.position;
         var playerNextPosition = dragonBallyPosition0;
-        var oldPosition = _rigidbody2D.position;
+        var oldPosition = rigidbody2D.position;
         var d0 = Vector2.Distance(oldPosition, dragonBallyPosition0);
         var d1 = Vector2.Distance(oldPosition, dragonBallyPosition1);
         if (d1 < d0)
             playerNextPosition = dragonBallyPosition1;
 
-        _rigidbody2D.transform.position = (playerNextPosition);
+        rigidbody2D.transform.position = (playerNextPosition);
         if (!withItem) return;
-        var transform1 = _rigidbody2D.transform;
+        var transform1 = rigidbody2D.transform;
         var dX = transform1.position.x - oldPosition.x;
         var dY = transform1.position.y - oldPosition.y;
         var position = currentItem.transform.position;
@@ -586,16 +598,7 @@ public class Player : MonoBehaviour
         position = newItemPosition;
         currentItem.transform.position = position;
     }
-
-    // private void RotatePlayer(int rotateDirection)
-    // {
-    //     moustache.transform.parent = null;
-    //     var angle = 90;
-    //     if (rotateDirection == 0)
-    //         angle *= -1;
-    //     transform.Rotate(0, 0, angle);
-    //     moustache.transform.parent = gameObject.transform;
-    // }
+    
 
     #endregion
 }

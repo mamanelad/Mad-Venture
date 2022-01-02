@@ -42,8 +42,7 @@ public class Item : MonoBehaviour
         GameManager.PlaySound(0);
         if (gameObject.CompareTag("family"))
             GameManager.ItemsBlinking(true);
-        // if (_itemName == "Trophy")
-        //     GameManager.ItemsBlinking(true);
+       
 
         ReleaseItem();
         player.withItem = true;
@@ -56,7 +55,6 @@ public class Item : MonoBehaviour
 
     private void Update()
     {
-        // if (Input.GetKey(KeyCode.Space) & _hingeJoint2D.enabled)
         if (Input.GetKey(KeyCode.Space))
             ReleaseItem();
     }
@@ -69,9 +67,6 @@ public class Item : MonoBehaviour
         {
             if (currentItem.CompareTag("family"))
                 GameManager.ItemsBlinking(false);
-            //
-            // if (currentItem.name == "Trophy")
-            //     GameManager.ItemsBlinking(false);
 
             currentItem.GetComponent<HingeJoint2D>().enabled = false;
             currentItem.GetComponent<Rigidbody2D>().velocity = Vector2.zero;

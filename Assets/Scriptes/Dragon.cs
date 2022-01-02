@@ -100,7 +100,11 @@ public class Dragon : MonoBehaviour
     private void FixedUpdate()
     {
         if (dragonIsDead)
+        {
             killDragon();
+            return;
+        }
+            
 
         if (metPlayer)
             Rotate();
