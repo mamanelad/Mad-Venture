@@ -1,28 +1,25 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class SwordBonuse : MonoBehaviour
 {
     private string _name;
+    public TextMeshProUGUI text;
+    private Subtitles _subtitles;
+    public string[] firstEncounterStrings;
 
     private void Awake()
     {
         _name = gameObject.name;
-    }
+        _subtitles = text.GetComponent<Subtitles>();
 
-    // Start is called before the first frame update
-    void Start()
-    {
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+  
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -30,7 +27,7 @@ public class SwordBonuse : MonoBehaviour
         player.BuildSwordShooter();
         //TODO : call some animation and when animation is finise. 
         Destroy(gameObject);
-
-        
+        _subtitles.currentStrings = firstEncounterStrings;
+        _subtitles.showStrings = 0;
     }
 }

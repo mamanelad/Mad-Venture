@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Family : MonoBehaviour
 {
+    public GameManager gameManager;
+    public Dragon dragon;
     public Player player;
     public String dadShouting;
     private int exclamationMark = 0;
@@ -15,15 +18,17 @@ public class Family : MonoBehaviour
     private float time;
     private Animator _animator;
 
+    public TextMeshProUGUI text;
 
     public bool _dadShouting;
-    public Text text;
+    public bool insideTheHouse;
     private Subtitles _subtitles;
 
     public int numCam;
     private bool _encounterWasMade = false;
     public string[] firstEncounterStrings;
 
+    private bool _catchingMe = false;
 
     private void Awake()
     {
@@ -34,11 +39,21 @@ public class Family : MonoBehaviour
 
     void Update()
     {
+        if (player.curCamara == 1 & _catchingMe & !insideTheHouse)
+        {
+            insideTheHouse = true;
+            gameManager.familyMembersInTheHouse += 1; 
+        }
+        if (_catchingMe & Input.GetKey(KeyCode.Space))
+        {
+            _catchingMe = false;
+        }
         if (numCam == player.curCamara)
             _sameRoomAsPlayer = true;
 
-        Rotate(player.currentItem != gameObject);
-        if (!_encounterWasMade &_sameRoomAsPlayer)
+        Rotate(!_catchingMe);
+        
+        if (!_encounterWasMade & _sameRoomAsPlayer)
         {
             time += Time.deltaTime;
             if (time >= timeToWait)
@@ -49,6 +64,8 @@ public class Family : MonoBehaviour
             }
         }
 
+        
+   
         if (_sameRoomAsPlayer & numCam != player.curCamara & !_encounterWasMade)
         {
             text.text = "";
@@ -59,6 +76,8 @@ public class Family : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        _catchingMe = true; 
+        if (_encounterWasMade) return;
         _encounterWasMade = true;
         _subtitles.dadShouting = false;
         _subtitles.currentStrings = firstEncounterStrings;

@@ -63,11 +63,9 @@ public class Gate : MonoBehaviour
      */
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Player") & gateIsOpen)
-        {
-            SetGateOpen();
-            trigger.playerIsOverlapping = true;
-        }
+        if (!(other.gameObject.CompareTag("Player") & gateIsOpen)) return;
+        SetGateOpen();
+        trigger.playerIsOverlapping = true;
     }
 
     /**

@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
 
     #region public Fields
 
+    public int familyMembersInTheHouse;
     public GameObject swordRoom;
     public Camera[] cameras;
     public Item[] items;
@@ -38,7 +39,7 @@ public class GameManager : MonoBehaviour
     public AudioSource[] sounds;
     public Tilemap tilemap;
 
-    private int _familyNum = 0;
+    // private int _familyNum = 0;
     #endregion
 
     #region MonoBehaviour
@@ -60,6 +61,9 @@ public class GameManager : MonoBehaviour
      */
     private void Update()
     {
+        if (_shared.familyMembersInTheHouse == 3 & !_exitGame)
+                PlaySound(3);
+        
         foreach (var dragon in dragons)
         {
             if (dragon.patrol & !dragon.metPlayer)
@@ -83,15 +87,15 @@ public class GameManager : MonoBehaviour
     public static void PlaySound(int num)
     {
         _shared.sounds[num].Play();
+        // print("kaka");
         if (num != 3) return;
-        _shared._familyNum += 1;
-        if (_shared._familyNum == 3)
-        {
+        // if (_shared.familyMembersInTheHouse == 3)
+        // {
             _shared._exitGame = true;
             var animator = _shared.swordRoom.GetComponent<Animator>();
             animator.SetTrigger(SwitchColor);
             
-        }
+        // }
         
     }
 
@@ -106,8 +110,8 @@ public class GameManager : MonoBehaviour
             case 1:
                 _shared.yellowSwordRoom.Invoke();
                 _shared.openGateYellow.Invoke();
-                if (_shared.player.currentItem.CompareTag("family"))
-                    PlaySound(3);
+                // if (_shared.player.currentItem.CompareTag("family"))
+                //     PlaySound(3);
                 
                 // if (_shared.player.currentItem.name == "Trophy")
                 //     PlaySound(3);
@@ -176,7 +180,8 @@ public class GameManager : MonoBehaviour
     private static void DragonManageCamara(int num, int dragonNum)
     {
         var curDragon = _shared.dragons[dragonNum];
-        if (curDragon.curCamara == num)
+        if (!curDragon) return;
+            if (curDragon.curCamara == num)
         {
             curDragon.patrol = false;
             curDragon.metPlayer = true;

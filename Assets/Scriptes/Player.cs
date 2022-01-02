@@ -138,23 +138,14 @@ public class Player : MonoBehaviour
     {
 
         
-        // if (!canMove) return;
         _moustacheAnimator.SetBool("mustachRotate", _longClicking);
-
-
         rigidbody2D.velocity = Vector2.zero;
-       
-
         _leftPressed = Input.GetKey(KeyCode.A);
         _rightPressed = Input.GetKey(KeyCode.D);
         _upPressed = Input.GetKey(KeyCode.W);
         _downPressed = Input.GetKey(KeyCode.S);
-
-
         if (!_moveAfterTransfer)
             StartCoroutine(WaitAfterTransfer());
-
-
         if (_gotInSideMouth)
         {
             _gotInSideMouthTimer += Time.deltaTime;
@@ -214,39 +205,38 @@ public class Player : MonoBehaviour
         var flag = false;
         var otherGameObject = other.gameObject;
         var otherPosition = otherGameObject.transform.position;
-        var otherPositionY = otherPosition.y;
-        var otherPositionX = otherPosition.x;
+        // var otherPositionY = otherPosition.y;
+        // var otherPositionX = otherPosition.x;
 
-        var myPosition = transform.position;
-        var myPositionY = myPosition.y;
-        var myPositionX = myPosition.x;
+        // var myPosition = transform.position;
+        // var myPositionY = myPosition.y;
+        // var myPositionX = myPosition.x;
 
-        curCamara = 0;
+        // curCamara = 0;
 
         switch (otherGameObject.name)
         {
-            case "triggerYellowCasttleRoom":
-                flag = true;
-                curCamara = 1;
-                color = 0;
-                TransferPlayer(0, false, false);
-                other.enabled = true;
-                break;
-            case "triggerBlackCasttleRoom":
-                // print("papa");
-                flag = true;
-                curCamara = 12;
-                color = 2;
-                TransferPlayer(17, false, false);
-                other.enabled = true;
-                break;
+            // case "triggerYellowCasttleRoom":
+            //     flag = true;
+            //     curCamara = 1;
+            //     color = 0;
+            //     TransferPlayer(0, false, false);
+            //     other.enabled = true;
+            //     break;
+            // case "triggerBlackCasttleRoom":
+            //     flag = true;
+            //     curCamara = 12;
+            //     color = 2;
+            //     TransferPlayer(17, false, false);
+            //     other.enabled = true;
+            //     break;
 
-            case "triggerMagnetaRoom":
-                flag = true;
-                curCamara = 11;
-                color = 4;
-                TransferPlayer(18, false, false);
-                break;
+            // case "triggerMagnetaRoom":
+            //     flag = true;
+            //     curCamara = 11;
+            //     color = 4;
+            //     TransferPlayer(18, false, false);
+            //     break;
         }
 
 
@@ -405,7 +395,7 @@ public class Player : MonoBehaviour
                     curCamara = 13;
                     color = 5;
                 }
-
+            
                 break;
             }
 

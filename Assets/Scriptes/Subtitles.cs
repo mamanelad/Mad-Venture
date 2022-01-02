@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,10 +9,11 @@ public class Subtitles : MonoBehaviour
 {
     // public GameObject textBox;
 
+    public  TextMeshProUGUI _text;
     public Player Player;
-    private Text _text;
+    // private Text _text;
     // private int exclamationMark = 0;
-    private string currentText = "";
+    // private string currentText = "";
     public float timeToWait;
     private float time;
     private bool firstMove = false;
@@ -24,13 +26,14 @@ public class Subtitles : MonoBehaviour
     public string[] currentStrings;
     public int showStrings = -1;
     private bool _coroutineIsRunning = false;
-    
+
+    public GameObject swordBonus;
 
     // Start is called before the first frame update
     private void Awake()
     {
-        _text = gameObject.GetComponent<Text>();
-        _text.text = "Press 'W', 'A', 'S', 'D' to move ";
+        _text = gameObject.GetComponent<TextMeshProUGUI>();
+        _text.text = "Press <sprite name=move> to move";
 
     }
 
@@ -42,7 +45,6 @@ public class Subtitles : MonoBehaviour
                           Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)))
         {
             firstMove = true;
-           
             StartCoroutine(ChangeText("", 0.5f));
         }
 
@@ -50,7 +52,7 @@ public class Subtitles : MonoBehaviour
         {
             Player.rigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
             catchFirstItem = true;
-            StartCoroutine(ChangeText("Press space for releasing an item", 0.5f));
+            StartCoroutine(ChangeText("Press  <sprite name=space> to release an item", 0.5f));
         }
 
         if (!_firstItemReleasing & Input.GetKey(KeyCode.Space))
@@ -62,59 +64,24 @@ public class Subtitles : MonoBehaviour
         
      
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        //
-        //
-        //
-        // if (Player.canMove & firstMove & (_text.text == "" || _text.text.Contains("Dad")) )
-        // {
-        //     if (dadShouting)
-        //     {
-        //         time += Time.deltaTime;
-        //         if (time >= timeToWait)
-        //         {
-        //             var mark = markGenerator();
-        //             _text.text = "Dad" + mark;
-        //             time = 0;
-        //         }
-        //     }
-        //
-        //     // else
-        //     // {
-        //     //     
-        //     //     StartCoroutine(ChangeText("", 0.5f));
-        //     // }
-        // }
-        //
-        //
-
 
         if (showStrings != -1)
         {
             if (!_coroutineIsRunning)
             {
-                
-                StartCoroutine(ChangeText(currentStrings[showStrings], 0.5f));
+                StartCoroutine(showStrings == 0
+                    ? ChangeText(currentStrings[showStrings], 0f)
+                    : ChangeText(currentStrings[showStrings], timeToWait));
+
                 showStrings += 1;
+                if (_text.text.Contains("sword"))
+                {
+                    if (swordBonus)
+                    {
+                        swordBonus.SetActive(true);
+                    }
+                    
+                }
             }
             
             if (showStrings == currentStrings.Length)
@@ -124,16 +91,7 @@ public class Subtitles : MonoBehaviour
         }
     }
 
-    //
-    // public void FamilyEncounter(string[] strings)
-    // {
-    //     foreach (var str in strings)
-    //     {
-    //         print("KAKA");
-    //         
-    //     }
-    // }
-
+   
 
 
 
