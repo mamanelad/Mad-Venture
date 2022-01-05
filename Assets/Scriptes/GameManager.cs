@@ -125,6 +125,8 @@ public class GameManager : MonoBehaviour
         _shared.curCam = num;
         _shared.cameras[_shared.curCam].enabled = true;
         DragonManageCamara(num, 0); // just for the red dragon
+        DragonManageCamara(num, 2); // just for the red dragon
+
     }
 
     /**

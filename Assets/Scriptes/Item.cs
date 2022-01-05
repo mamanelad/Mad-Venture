@@ -5,7 +5,7 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     #region public fields
-
+    
     public Player player;
     public Animator animator;
     public float distanceFromPlayer;
@@ -16,7 +16,7 @@ public class Item : MonoBehaviour
     #region private fields
 
     private Rigidbody2D _rigidbody2D;
-    private HingeJoint2D _hingeJoint2D;
+    public HingeJoint2D _hingeJoint2D;
     private SpriteRenderer _spriteRenderer;
     private string _itemName;
     private static readonly int SwitchColor = Animator.StringToHash("switchColor");

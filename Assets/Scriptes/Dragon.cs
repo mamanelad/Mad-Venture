@@ -199,6 +199,7 @@ public class Dragon : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
+        
         if (other.gameObject.CompareTag("Player"))
             CollisionAndTrigger("Player");
     }
@@ -210,6 +211,7 @@ public class Dragon : MonoBehaviour
      */
     private void CollisionAndTrigger(string nameO)
     {
+        PlayerP.currentDragon = gameObject;
         if (_currentStage == 0 & !playerIsDead)
         {
             dragonIsMoving = false;
@@ -238,13 +240,27 @@ public class Dragon : MonoBehaviour
      */
     public void EatPlayer()
     {
-        GameManager.PlaySound(4);
-        _currentStage = 1;
-        _nextStage = 0;
-        _changeState = true;
-        playerIsDead = true;
-        dragonIsMoving = false;
-        player.layer = 15;
+        if (PlayerP.life > 0)
+        {
+            _currentStage = 1;
+            _nextStage = 0;
+            _changeState = true;
+            GameManager.SwitchCamara(1);
+            if (gameObject.name == "DragonPatrol" )
+            {
+                patrol = true;
+            }
+        }
+        else
+        {
+            GameManager.PlaySound(4);
+            _currentStage = 1;
+            _nextStage = 0;
+            _changeState = true;
+            playerIsDead = true;
+            dragonIsMoving = false;
+            player.layer = 15; 
+        }
     }
 
 

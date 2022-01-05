@@ -9,7 +9,10 @@ public class Subtitles : MonoBehaviour
 {
     // public GameObject textBox;
 
+
     public  TextMeshProUGUI _text;
+    public TextMeshPro curFamilyTextBubble = null;
+    public GameObject chatBubble = null;
     public Player Player;
     // private Text _text;
     // private int exclamationMark = 0;
@@ -67,6 +70,7 @@ public class Subtitles : MonoBehaviour
 
         if (showStrings != -1)
         {
+            
             if (!_coroutineIsRunning)
             {
                 StartCoroutine(showStrings == 0
@@ -74,7 +78,7 @@ public class Subtitles : MonoBehaviour
                     : ChangeText(currentStrings[showStrings], timeToWait));
 
                 showStrings += 1;
-                if (_text.text.Contains("sword"))
+                if (curFamilyTextBubble.text.Contains("sword"))
                 {
                     if (swordBonus)
                     {
@@ -84,10 +88,7 @@ public class Subtitles : MonoBehaviour
                 }
             }
             
-            if (showStrings == currentStrings.Length)
-            {
-                showStrings = -1;
-            }
+         
         }
     }
 
@@ -97,10 +98,27 @@ public class Subtitles : MonoBehaviour
 
     IEnumerator ChangeText(string str, float time)
     {
+        
         _coroutineIsRunning = true;
         yield return new WaitForSeconds(time);
-        _text.text = str;
+        if (str == "" & chatBubble != null)
+        {
+            chatBubble.SetActive(false);
+        }
+        if (curFamilyTextBubble != null)
+        {
+            curFamilyTextBubble.text = str;
+        }
+        else
+        {
+            _text.text = str;
+        }
+        
         _coroutineIsRunning = false;
+        if (showStrings == currentStrings.Length)
+        {
+            showStrings = -1;
+        }
     }
     
    

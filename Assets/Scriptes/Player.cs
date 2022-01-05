@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Numerics;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -11,7 +12,10 @@ using Vector3 = System.Numerics.Vector3;
 
 public class Player : MonoBehaviour
 {
-    #region Fields
+    
+
+    
+    #region Field
 
     public GameManager gameManager;
     public SpriteRenderer spriteRenderer;
@@ -26,7 +30,11 @@ public class Player : MonoBehaviour
     #endregion
 
     #region Eating by a Dragon
-    
+
+    public int life;
+    public Transform eatenToHousePop;
+
+    public GameObject currentDragon = null;
     private float _gotInSideMouthTimer = 0;
     private float _continuumTimeInMouthTimer;
     private bool _gotInSideMouth = false;
@@ -109,25 +117,21 @@ public class Player : MonoBehaviour
         if (_longClicking)
         {
             _movingTimer += Time.deltaTime;
-
         }
 
         else
         {
             _movingTimer = 0;
         }
-            
+
 
         direction = ultimate;
         if (!(oldTimer == 0 | _movingTimer >= slowPlayer)) return;
         _movingTimer = 0.001f;
-        
+
         rigidbody2D.MovePosition(rigidbody2D.position + size * ultimate);
-        
-       
     }
-    
-    
+
 
     public void BuildSwordShooter()
     {
@@ -136,8 +140,6 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-
-        
         _moustacheAnimator.SetBool("mustachRotate", _longClicking);
         rigidbody2D.velocity = Vector2.zero;
         _leftPressed = Input.GetKey(KeyCode.A);
@@ -202,52 +204,8 @@ public class Player : MonoBehaviour
     public void OnTriggerEnter2D(Collider2D other)
     {
         if (!_moveAfterTransfer) return;
-        var flag = false;
         var otherGameObject = other.gameObject;
         var otherPosition = otherGameObject.transform.position;
-        // var otherPositionY = otherPosition.y;
-        // var otherPositionX = otherPosition.x;
-
-        // var myPosition = transform.position;
-        // var myPositionY = myPosition.y;
-        // var myPositionX = myPosition.x;
-
-        // curCamara = 0;
-
-        switch (otherGameObject.name)
-        {
-            // case "triggerYellowCasttleRoom":
-            //     flag = true;
-            //     curCamara = 1;
-            //     color = 0;
-            //     TransferPlayer(0, false, false);
-            //     other.enabled = true;
-            //     break;
-            // case "triggerBlackCasttleRoom":
-            //     flag = true;
-            //     curCamara = 12;
-            //     color = 2;
-            //     TransferPlayer(17, false, false);
-            //     other.enabled = true;
-            //     break;
-
-            // case "triggerMagnetaRoom":
-            //     flag = true;
-            //     curCamara = 11;
-            //     color = 4;
-            //     TransferPlayer(18, false, false);
-            //     break;
-        }
-
-
-        if (flag)
-        {
-            _moveAfterTransfer = false;
-            GameManager.SwitchCamara(curCamara);
-            spriteRenderer.color = Colors[color];
-            gameManager.tilemap.color = Colors[color];
-        }
-
 
         if (other.gameObject.CompareTag("moveThrow"))
         {
@@ -395,7 +353,7 @@ public class Player : MonoBehaviour
                     curCamara = 13;
                     color = 5;
                 }
-            
+
                 break;
             }
 
@@ -569,14 +527,13 @@ public class Player : MonoBehaviour
  */
     private void TransferToBally()
     {
-        var dragonBallyPosition0 = dragonBalys[0].transform.position;
-        var dragonBallyPosition1 = dragonBalys[1].transform.position;
-        var playerNextPosition = dragonBallyPosition0;
         var oldPosition = rigidbody2D.position;
-        var d0 = Vector2.Distance(oldPosition, dragonBallyPosition0);
-        var d1 = Vector2.Distance(oldPosition, dragonBallyPosition1);
-        if (d1 < d0)
-            playerNextPosition = dragonBallyPosition1;
+        var playerNextPosition = currentDragon.transform.position;
+        if (life > 0)
+        {
+            playerNextPosition = eatenToHousePop.position;
+            life -= 1;
+        }
 
         rigidbody2D.transform.position = (playerNextPosition);
         if (!withItem) return;
@@ -588,7 +545,6 @@ public class Player : MonoBehaviour
         position = newItemPosition;
         currentItem.transform.position = position;
     }
-    
 
     #endregion
 }
