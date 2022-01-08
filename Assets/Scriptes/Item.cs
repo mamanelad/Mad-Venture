@@ -5,7 +5,8 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     #region public fields
-    
+
+    public bool carryMe = false;
     public Player player;
     public Animator animator;
     public float distanceFromPlayer;
@@ -40,8 +41,8 @@ public class Item : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
         GameManager.PlaySound(0);
-        if (gameObject.CompareTag("family"))
-            GameManager.ItemsBlinking(true);
+        // if (gameObject.CompareTag("family"))
+        //     GameManager.ItemsBlinking(true);
        
 
         ReleaseItem();
@@ -65,9 +66,6 @@ public class Item : MonoBehaviour
         var currentItem = player.currentItem.gameObject;
         foreach (var item in gameManager.items)
         {
-            if (currentItem.CompareTag("family"))
-                GameManager.ItemsBlinking(false);
-
             currentItem.GetComponent<HingeJoint2D>().enabled = false;
             currentItem.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
             player.withItem = false;
@@ -78,12 +76,14 @@ public class Item : MonoBehaviour
                 _rigidbody2D.velocity = Vector2.zero;
             }
 
+            carryMe = false;
             player.currentItem = player.empty;
         }
     }
 
     private IEnumerator WaitToHinge()
     {
+        carryMe = true;
         yield return new WaitForSeconds(0.01f);
         _hingeJoint2D.enabled = true;
     }

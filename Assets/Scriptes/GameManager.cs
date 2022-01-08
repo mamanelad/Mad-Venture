@@ -8,8 +8,15 @@ using UnityEngine.Tilemaps;
 
 public class GameManager : MonoBehaviour
 {
-    #region UnityEvent
+    #region level managment
 
+    public GameOverScreen gameOverScreen;
+    public GameOverScreen gameWonScreen;
+
+
+    #endregion
+    
+    #region UnityEvent
     public UnityEvent yellowSwordRoom;
     public UnityEvent openGateYellow;
     public UnityEvent blackTrophyRoom;
@@ -22,7 +29,7 @@ public class GameManager : MonoBehaviour
 
     private static GameManager _shared;
     [FormerlySerializedAs("_curCam")] public int curCam; //The current camara.
-    private bool _exitGame = false;
+    private bool _exitGame;
     private float _gameExitCounter;
     private static readonly int SwitchColor = Animator.StringToHash("switchColor");
 
@@ -38,8 +45,7 @@ public class GameManager : MonoBehaviour
     public Player player;
     public AudioSource[] sounds;
     public Tilemap tilemap;
-
-    // private int _familyNum = 0;
+    
     #endregion
 
     #region MonoBehaviour
@@ -70,12 +76,11 @@ public class GameManager : MonoBehaviour
                 DragonPatrol(dragon);
         }
 
-
         if (_exitGame)
             _gameExitCounter -= Time.deltaTime;
 
         if (_gameExitCounter <= 0)
-            FinishGame();
+            gameWonScreen.SetUp();
             
     }
 
@@ -86,17 +91,13 @@ public class GameManager : MonoBehaviour
      */
     public static void PlaySound(int num)
     {
+        if (num == 1  & _shared.player.currentItem == _shared.player.empty) return;
         _shared.sounds[num].Play();
-        // print("kaka");
         if (num != 3) return;
-        // if (_shared.familyMembersInTheHouse == 3)
-        // {
+        
             _shared._exitGame = true;
             var animator = _shared.swordRoom.GetComponent<Animator>();
             animator.SetTrigger(SwitchColor);
-            
-        // }
-        
     }
 
     /**
@@ -108,52 +109,33 @@ public class GameManager : MonoBehaviour
         switch (num)
         {
             case 1:
-                _shared.yellowSwordRoom.Invoke();
                 _shared.openGateYellow.Invoke();
-                // if (_shared.player.currentItem.CompareTag("family"))
-                //     PlaySound(3);
-                
-                // if (_shared.player.currentItem.name == "Trophy")
-                //     PlaySound(3);
                 break;
             case 12:
                 _shared.blackTrophyRoom.Invoke();
                 break;
         }
-
+        
         _shared.cameras[_shared.curCam].enabled = false;
         _shared.curCam = num;
         _shared.cameras[_shared.curCam].enabled = true;
         DragonManageCamara(num, 0); // just for the red dragon
-        DragonManageCamara(num, 2); // just for the red dragon
+        DragonManageCamara(num, 2); // just for the white dragon
 
     }
-
-    /**
-     * Trigger the SwitchColor animation trigger to true for all the items if the player with the trophy.
-     */
-    public static void ItemsBlinking(bool state)
-    {
-        foreach (var item in _shared.items)
-        {
-            if (item.name == "Trophy") continue;
-            item.animator.SetBool(SwitchColor, state);
-        }
-    }
-
+    
     /**
      * Setting which camara is the patrolling dragon is in.
      */
-    private void DragonPatrol(Dragon target)
+    private void DragonPatrol(Dragon curDragon)
     {
+        GameObject target = curDragon.gameObject;
         for (var i = 0; i < cameras.Length; i++)
         {
             var cam = cameras[i];
             if (!IsVisible(cam, target)) continue;
-            target.curCamara = i;
-            // print("player cam is - " + _shared.player.curCamara);
-            // print("dragon patrol cam is " + target.curCamara);
-            if (target.curCamara != _shared.player.curCamara) continue;
+            curDragon.curCamara = i;
+            if (curDragon.curCamara != _shared.player.curCamara) continue;
             DragonManageCamara(i, 1);
             break;
         }
@@ -164,7 +146,7 @@ public class GameManager : MonoBehaviour
      */
     public static void EatPlayer()
     {
-        _shared.eatPlayer.Invoke();
+        _shared.player.currentDragon.GetComponent<Dragon>().EatPlayer();
     }
 
     /**
@@ -172,7 +154,6 @@ public class GameManager : MonoBehaviour
      */
     public static void DragonReturnNormal()
     {
-        
         _shared.dragonBackToNormal.Invoke();
     }
 
@@ -214,7 +195,7 @@ public class GameManager : MonoBehaviour
      * Gets a camara game object and a dragon game object and returning true if the camara see the dragon.
      * Returning false otherwise.
      */
-    private static bool IsVisible(Camera c, [NotNull] Dragon target)
+    private static bool IsVisible(Camera c, [NotNull] GameObject target)
     {
         if (target == null) throw new ArgumentNullException(nameof(target));
         var planes = GeometryUtility.CalculateFrustumPlanes(c);
@@ -226,13 +207,14 @@ public class GameManager : MonoBehaviour
                 return false;
             }
         }
-
+        
         return true;
     }
 
     public void FinishGame()
     {
-        UnityEditor.EditorApplication.isPlaying = false;
+        gameOverScreen.SetUp();
     }
+    
     #endregion
 }

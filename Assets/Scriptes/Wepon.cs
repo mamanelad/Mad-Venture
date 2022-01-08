@@ -7,26 +7,16 @@ using UnityEngine;
 
 public class Wepon : MonoBehaviour
 {
+    #region  Fields
     public float speed = 5f;
-
     public Transform firePoint;
-
     public GameObject swordPrefab;
-
-    private bool _canShot = true;
-
     public GameManager gameManager;
+    private bool _canShot = true;
     
-    
-    
-    
-    
-    // Start is called before the first frame update
+    #endregion
 
-    public void FixedUpdate()
-    {
-    }
-
+    #region MonoBehaviour
     // Update is called once per frame
     public void Update()
     {
@@ -57,13 +47,21 @@ public class Wepon : MonoBehaviour
         }
     }
 
+    /**
+     * Shot the sword.
+     */
     private void Shoot()
     {
         var x = Instantiate(swordPrefab, firePoint.position, firePoint.rotation);
     }
 
+    /**
+     * Calculate the angle to shot the sword.
+     */
     float AngleBetweenTwoPoints(Vector3 a, Vector3 b)
     {
         return Mathf.Atan2(a.y - b.y, a.x - b.x) * Mathf.Rad2Deg;
     }
+    
+    #endregion
 }

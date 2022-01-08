@@ -7,7 +7,10 @@ using UnityEngine.UI;
 
 public class Family : MonoBehaviour
 {
-    private bool _speakings = false;
+    public String[] objectiveStrings;
+    private bool textIsRed = false;
+    private float ExclamationMarkWaiting = 0.5f;
+    public int maxExclamationMark;
 
     public GameObject chatBubble;
     public TextMeshPro textMy;
@@ -57,10 +60,15 @@ public class Family : MonoBehaviour
         _subtitles = text.GetComponent<Subtitles>();
     }
 
+    
     void Update()
     {
-        
 
+        if (insideTheHouse)
+        {
+            _meAsAnItem._hingeJoint2D.enabled = false;
+            _rigidbody.MovePosition(houseWhereToPop.position);
+        }
 
         if (player.curCamara == 1 & _catchingMe & !insideTheHouse)
             GotIntoTheHouse();
@@ -73,28 +81,37 @@ public class Family : MonoBehaviour
         if (numCam == player.curCamara)
             _sameRoomAsPlayer = true;
 
-        // Rotate((!_catchingMe || numCam == 1) & !_speakings);
-        // Rotate((_subtitles.showStrings == -1) & !_speakings);
+        
         Rotate((_subtitles.showStrings == -1 & !_dadShouting) & !_catchingMe);
 
 
 
+        
 
         if (!_encounterWasMade & _sameRoomAsPlayer)
         {
+            
             _dadShouting = true;
-            _speakings = true;
             time += Time.deltaTime;
-            if (time >= timeToWait)
+            if (time >= ExclamationMarkWaiting)
             {
-                var mark = markGenerator();
-                if (chatBubble)
+                ExclamationMarkWaiting = timeToWait;
+                if (exclamationMark == maxExclamationMark & !textIsRed )
                 {
-                   chatBubble.SetActive(true); 
+                    textMy.color = Color.red;
+                    textIsRed = true;
                 }
-                
-                textMy.text = dadShouting + mark;
-                time = 0;
+                if (exclamationMark <= maxExclamationMark)
+                {
+                    var mark = markGenerator();
+                    if (chatBubble)
+                    {
+                        chatBubble.SetActive(true);
+                    }
+
+                    textMy.text = dadShouting + mark;
+                    time = 0;
+                }
             }
         }
 
@@ -104,36 +121,58 @@ public class Family : MonoBehaviour
             textMy.text = " ";
             chatBubble.SetActive(false);
             _sameRoomAsPlayer = false;
-            _speakings = false;
 
         }
     }
 
     private void GotIntoTheHouse()
     {
+        
+
         insideTheHouse = true;
         gameManager.familyMembersInTheHouse += 1;
         _meAsAnItem._hingeJoint2D.enabled = false;
         _rigidbody.MovePosition(houseWhereToPop.position);
         _rigidbody.velocity = Vector2.zero;
         _catchingMe = false;
+        
+        if (lastEncounterStrings.Length <= 0) return;
         chatBubble.SetActive(true);
+        
         _subtitles.currentStrings = lastEncounterStrings;
         _subtitles.showStrings = 0;
+        player.currentItem = player.empty;
+        
+        _subtitles.currentObjective = objectiveStrings[1];
+        _subtitles.textCurrentObjective.text = objectiveStrings[1];
+        foreach (var item in gameManager.items)
+        {
+            if (item.carryMe)
+            {
+                player.currentItem = item.gameObject;
+            }
+        }
+
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         _dadShouting = false;
         _catchingMe = true;
+         
         if (_encounterWasMade) return;
+        // _subtitles.textCurrentObjective.text = objectiveStrings[0];
         _encounterWasMade = true;
         _subtitles.dadShouting = false;
 
 
+
+
+        _subtitles.currentObjective = objectiveStrings[0];
         _subtitles.curFamilyTextBubble = textMy;
         _subtitles.currentStrings = firstEncounterStrings;
         _subtitles.showStrings = 0;
+        _subtitles.timeToWait = timeToWait;
 
         _subtitles.chatBubble = chatBubble;
 
@@ -153,6 +192,7 @@ public class Family : MonoBehaviour
 
     private String markGenerator()
     {
+       
         var mark = "";
         for (int i = 0; i < exclamationMark; i++)
         {

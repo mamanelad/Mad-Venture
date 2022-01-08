@@ -6,6 +6,10 @@ public class Dragon : MonoBehaviour
 {
     #region Fields
 
+    public Triggers goHomeTrigger;
+    private bool _movementBackToNormal = true;
+
+
     //Other Game objects
     public GameObject dragonsprite;
     public GameObject player;
@@ -69,7 +73,6 @@ public class Dragon : MonoBehaviour
 
     #region Animation
 
-    
     public GameObject poof;
     public float rotateFrom;
     private static readonly int Rotate1 = Animator.StringToHash("rotate");
@@ -80,7 +83,6 @@ public class Dragon : MonoBehaviour
 
     private void Awake()
     {
-        
         // Setting the first patrol point
         if (patrol)
             _currentPatrolPoint = patrolPoints[_currentPatrolIndex];
@@ -88,8 +90,8 @@ public class Dragon : MonoBehaviour
         //Setting game object components
         _spriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer>();
         _spriteRenderer.sprite = sprites[0];
-        
-        
+
+
         _spriteAnimator = dragonsprite.GetComponent<Animator>();
         rBDragon = gameObject.GetComponent<Rigidbody2D>();
         _mouthCollider = mouth.GetComponent<PolygonCollider2D>();
@@ -111,7 +113,7 @@ public class Dragon : MonoBehaviour
             animator.SetTrigger("deadDragon");
             return;
         }
-            
+
 
         if (metPlayer)
             Rotate();
@@ -124,7 +126,7 @@ public class Dragon : MonoBehaviour
 
         // if (_changeState)
         //     StartCoroutine(WaitToStateChange(timeToWait));
-        
+
         if (_changeState)
         {
             _time += Time.deltaTime;
@@ -134,24 +136,13 @@ public class Dragon : MonoBehaviour
                 _time = 0;
             }
         }
-            
     }
 
-    // /**
-    //  * Waiting before state changing 
-    //  */
-    // private IEnumerator WaitToStateChange(float timeToWait)
-    // {
-    //     yield return new WaitForSeconds(timeToWait);
-    //     ChangeDragonState();
-    // }
-    //
     private void killDragon()
     {
         Instantiate(poof, transform.position, transform.rotation);
         Destroy(gameObject);
     }
-    
 
 
     /**
@@ -199,12 +190,11 @@ public class Dragon : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        
         if (other.gameObject.CompareTag("Player"))
             CollisionAndTrigger("Player");
     }
-    
-    
+
+
     /**
      * Setting the right thing to do depends on which gameobjects the dragon
      * encounteras with.
@@ -233,47 +223,46 @@ public class Dragon : MonoBehaviour
     }
 
 
-
     /**
      * Setting all the values to be accourate,
      * after the dragon ate the player.
      */
     public void EatPlayer()
     {
-        if (PlayerP.life > 0)
-        {
-            _currentStage = 1;
-            _nextStage = 0;
-            _changeState = true;
-            GameManager.SwitchCamara(1);
-            if (gameObject.name == "DragonPatrol" )
-            {
-                patrol = true;
-            }
-        }
-        else
-        {
-            GameManager.PlaySound(4);
-            _currentStage = 1;
-            _nextStage = 0;
-            _changeState = true;
-            playerIsDead = true;
-            dragonIsMoving = false;
-            player.layer = 15; 
-        }
+        GameManager.PlaySound(4);
+        _currentStage = 1;
+        _nextStage = 0;
+        _changeState = true;
+        playerIsDead = true;
+        dragonIsMoving = false;
+        player.layer = 15;
+        FindObjectOfType<GameManager>().FinishGame();
     }
 
 
     /**
      * Returning the dragon back to Normal Mode
      */
-    public void ReturnNormal()
+    private void ReturnNormal()
     {
+        // print("return normal was called");
         _currentStage = 1;
         _nextStage = 0;
         _mouthCollider.enabled = false;
         _changeState = true;
-        _returnMovement = true;
+        if (!_movementBackToNormal)
+        {
+            // print("kaka");
+            metPlayer = false;
+            dragonIsMoving = false;
+            _returnMovement = false;
+        }
+        else
+        {
+            _returnMovement = true;
+        }
+
+        _movementBackToNormal = true;
     }
 
 

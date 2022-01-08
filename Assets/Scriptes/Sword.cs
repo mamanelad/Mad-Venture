@@ -5,13 +5,16 @@ using UnityEngine;
 
 public class Sword : MonoBehaviour
 {
+    #region public fields 
+    
     public float speed = 20f;
     public int damage = 100;
-
     public Rigidbody2D swordRigidbody2D;
-
     public GameObject impactEffect;
-    // Start is called before the first frame update
+    
+    #endregion
+    
+    #region MonoBehaviour
     void Start()
     {
         swordRigidbody2D.velocity = transform.right * speed * (-1);
@@ -24,10 +27,12 @@ public class Sword : MonoBehaviour
         {
             dragon.TakeDamage(damage);
         }
-        
-        
-        Instantiate(impactEffect, transform.position, transform.rotation);
+
+        var transform1 = transform;
+        Instantiate(impactEffect, transform1.position, transform1.rotation);
+        GameManager.PlaySound(6);
         Destroy(gameObject);
     }
     
+    #endregion
 }

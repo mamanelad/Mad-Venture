@@ -7,21 +7,22 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.Tilemaps;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = System.Numerics.Vector3;
 
 public class Player : MonoBehaviour
 {
-    
-
-    
     #region Field
 
+    public Transform homeWhereToPop;
+    public GameObject maze;
     public GameManager gameManager;
     public SpriteRenderer spriteRenderer;
     public int color = 0;
     public GameObject[] mazeTriggers;
     public Rigidbody2D rigidbody2D;
+    public BoxCollider2D playerBoxCollider2D;
     public int curCamara;
 
     public readonly Color[] Colors = new[]
@@ -82,6 +83,7 @@ public class Player : MonoBehaviour
     #region Animation
 
     private Animator _moustacheAnimator;
+    private static readonly int MustachRotate = Animator.StringToHash("mustachRotate");
 
     #endregion
 
@@ -100,6 +102,7 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // print(curCamara);
         if (!canMove) return;
         var ultimate = Vector2.zero;
 
@@ -140,7 +143,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        _moustacheAnimator.SetBool("mustachRotate", _longClicking);
+        _moustacheAnimator.SetBool(MustachRotate, _longClicking);
         rigidbody2D.velocity = Vector2.zero;
         _leftPressed = Input.GetKey(KeyCode.A);
         _rightPressed = Input.GetKey(KeyCode.D);
@@ -257,12 +260,6 @@ public class Player : MonoBehaviour
         var myPositionX = myPosition.x;
         switch (otherGameObject.name)
         {
-            case "triggerSwordRoom":
-                flag = true;
-                curCamara = 0;
-                color = 0;
-                break;
-
             case "triggerYellowGreen":
             {
                 flag = true;
@@ -308,6 +305,7 @@ public class Player : MonoBehaviour
                     curCamara = 4;
                     color = 2;
                 }
+
 
                 break;
             }
@@ -529,17 +527,12 @@ public class Player : MonoBehaviour
     {
         var oldPosition = rigidbody2D.position;
         var playerNextPosition = currentDragon.transform.position;
-        if (life > 0)
-        {
-            playerNextPosition = eatenToHousePop.position;
-            life -= 1;
-        }
-
         rigidbody2D.transform.position = (playerNextPosition);
         if (!withItem) return;
         var transform1 = rigidbody2D.transform;
-        var dX = transform1.position.x - oldPosition.x;
-        var dY = transform1.position.y - oldPosition.y;
+        var position1 = transform1.position;
+        var dX = position1.x - oldPosition.x;
+        var dY = position1.y - oldPosition.y;
         var position = currentItem.transform.position;
         var newItemPosition = new Vector2(position.x + dX, position.y + dY);
         position = newItemPosition;

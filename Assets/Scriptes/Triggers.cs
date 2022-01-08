@@ -21,7 +21,7 @@ public class Triggers : MonoBehaviour
     #endregion
     
     #region MonoBehaviour
-    // Update is called once per frame
+    
     public void Update()
     {
         if (!playerIsOverlapping) return;
@@ -49,6 +49,9 @@ public class Triggers : MonoBehaviour
         }
     }
     
+    /**
+     * Transfer the items that the player is currently taking.
+     */
     private void TransferItems(Item currentItem, Vector3 oldPlayerPosition)
     {
         var newPlayerPosition = playerG.transform.position;
@@ -63,7 +66,7 @@ public class Triggers : MonoBehaviour
         transform1.position = position;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {

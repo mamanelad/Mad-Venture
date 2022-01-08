@@ -50,3 +50,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: gameObjects
+    uniqueID: 857243607
+    locked: 0
+  - name: FG
+    uniqueID: 3484878971
+    locked: 0

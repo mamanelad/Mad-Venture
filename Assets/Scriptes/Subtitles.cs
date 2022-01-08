@@ -7,43 +7,48 @@ using UnityEngine.UI;
 
 public class Subtitles : MonoBehaviour
 {
-    // public GameObject textBox;
-
-
-    public  TextMeshProUGUI _text;
-    public TextMeshPro curFamilyTextBubble = null;
-    public GameObject chatBubble = null;
-    public Player Player;
-    // private Text _text;
-    // private int exclamationMark = 0;
-    // private string currentText = "";
-    public float timeToWait;
-    private float time;
-    private bool firstMove = false;
-    public bool catchFirstItem = false;
-    private bool _firstItemReleasing = false;
-
-    public bool dadShouting = false;
-
-
-    public string[] currentStrings;
-    public int showStrings = -1;
-    private bool _coroutineIsRunning = false;
+    #region GameObjects
 
     public GameObject swordBonus;
+    public GameObject chatBubble = null;
+    public Player player;
 
-    // Start is called before the first frame update
+    #endregion
+    
+    #region public fields
+    
+    public String currentObjective;
+    public float timeToWait;
+    public TextMeshProUGUI text;
+    public TextMeshPro curFamilyTextBubble = null;
+    public TextMeshProUGUI textCurrentObjective;
+    public bool textOriginal = false;
+    public bool catchFirstItem = false;
+    public bool dadShouting = false;
+    public string[] currentStrings;
+    public int showStrings = -1;
+    
+    #endregion
+
+    #region private fields
+
+    private float _releaseItemMessageWaitingTime = 0;
+    private String lastStr = " ";
+    private float time;
+    private bool firstMove = false;
+    private bool _firstItemReleasing = false;
+    private bool _coroutineIsRunning = false;
+
+    #endregion
+    
+    #region MonoBehaviour
     private void Awake()
     {
-        _text = gameObject.GetComponent<TextMeshProUGUI>();
-        _text.text = "Press <sprite name=move> to move";
-
+        text = gameObject.GetComponent<TextMeshProUGUI>();
     }
-
-
-    // Update is called once per frame
     void Update()
     {
+
         if (!firstMove & (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) ||
                           Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)))
         {
@@ -51,26 +56,29 @@ public class Subtitles : MonoBehaviour
             StartCoroutine(ChangeText("", 0.5f));
         }
 
-        if (!catchFirstItem & Player.currentItem != Player.empty)
+        if (!catchFirstItem & player.currentItem != player.empty)
         {
-            Player.rigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
             catchFirstItem = true;
-            StartCoroutine(ChangeText("Press  <sprite name=space> to release an item", 0.5f));
+            StartCoroutine(ChangeText("Press  <sprite name=Space_Key_Light> \n" + "to release an item", 0.1f));
+            _releaseItemMessageWaitingTime = 0.1f;
         }
 
-        if (!_firstItemReleasing & Input.GetKey(KeyCode.Space))
+        if (_releaseItemMessageWaitingTime != 0)
         {
-            Player.rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
+            _releaseItemMessageWaitingTime += Time.deltaTime;
+        }
+
+        if ((!_firstItemReleasing & Input.GetKey(KeyCode.Space)) | _releaseItemMessageWaitingTime >= 2)
+        {
+            _releaseItemMessageWaitingTime = 0;
             _firstItemReleasing = true;
             StartCoroutine(ChangeText("", 0.5f));
         }
-        
-     
-        
 
+
+        //change subtitles of family members
         if (showStrings != -1)
         {
-            
             if (!_coroutineIsRunning)
             {
                 StartCoroutine(showStrings == 0
@@ -78,49 +86,46 @@ public class Subtitles : MonoBehaviour
                     : ChangeText(currentStrings[showStrings], timeToWait));
 
                 showStrings += 1;
-                if (curFamilyTextBubble.text.Contains("sword"))
-                {
-                    if (swordBonus)
-                    {
-                        swordBonus.SetActive(true);
-                    }
-                    
-                }
             }
-            
-         
         }
     }
-
-   
-
-
-
+    
+    /**
+     * change Subtitles of the gamwe
+     */
     IEnumerator ChangeText(string str, float time)
     {
-        
         _coroutineIsRunning = true;
         yield return new WaitForSeconds(time);
         if (str == "" & chatBubble != null)
-        {
             chatBubble.SetActive(false);
-        }
-        if (curFamilyTextBubble != null)
+        
+
+        if (curFamilyTextBubble != null & !textOriginal)
         {
+            curFamilyTextBubble.color = showStrings != -1 ? Color.red : Color.black;
             curFamilyTextBubble.text = str;
         }
         else
         {
-            _text.text = str;
+            text.text = str;
         }
         
         _coroutineIsRunning = false;
         if (showStrings == currentStrings.Length)
         {
             showStrings = -1;
+            textCurrentObjective.text = currentObjective;
+            if (textOriginal)
+                textOriginal = false;
+            
         }
+
+        if (lastStr.Contains("Sword") & swordBonus)
+            swordBonus.SetActive(true);
+        
+        lastStr = str;
     }
     
-   
-    
+    #endregion
 }
