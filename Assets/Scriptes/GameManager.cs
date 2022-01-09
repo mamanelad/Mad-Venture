@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 
 public class GameManager : MonoBehaviour
@@ -13,10 +14,10 @@ public class GameManager : MonoBehaviour
     public GameOverScreen gameOverScreen;
     public GameOverScreen gameWonScreen;
 
-
     #endregion
-    
+
     #region UnityEvent
+
     public UnityEvent yellowSwordRoom;
     public UnityEvent openGateYellow;
     public UnityEvent blackTrophyRoom;
@@ -45,7 +46,7 @@ public class GameManager : MonoBehaviour
     public Player player;
     public AudioSource[] sounds;
     public Tilemap tilemap;
-    
+
     #endregion
 
     #region MonoBehaviour
@@ -67,9 +68,15 @@ public class GameManager : MonoBehaviour
      */
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("MainMenue");
+        }
+
         if (_shared.familyMembersInTheHouse == 3 & !_exitGame)
-                PlaySound(3);
-        
+            PlaySound(3);
+
+
         foreach (var dragon in dragons)
         {
             if (dragon.patrol & !dragon.metPlayer)
@@ -77,11 +84,19 @@ public class GameManager : MonoBehaviour
         }
 
         if (_exitGame)
+        {
             _gameExitCounter -= Time.deltaTime;
+            _shared.player.transform.position = _shared.player.homeWhereToPop.position;
+            _shared.player.rigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
+
 
         if (_gameExitCounter <= 0)
+        {
+            // _shared.player.rigidbody2D.MovePosition(_shared.player.homeWhereToPop.position);
+
             gameWonScreen.SetUp();
-            
+        }
     }
 
 
@@ -91,13 +106,12 @@ public class GameManager : MonoBehaviour
      */
     public static void PlaySound(int num)
     {
-        if (num == 1  & _shared.player.currentItem == _shared.player.empty) return;
+        if (num == 1 & _shared.player.currentItem == _shared.player.empty) return;
         _shared.sounds[num].Play();
         if (num != 3) return;
-        
-            _shared._exitGame = true;
-            var animator = _shared.swordRoom.GetComponent<Animator>();
-            animator.SetTrigger(SwitchColor);
+        _shared._exitGame = true;
+        var animator = _shared.swordRoom.GetComponent<Animator>();
+        animator.SetTrigger(SwitchColor);
     }
 
     /**
@@ -115,15 +129,14 @@ public class GameManager : MonoBehaviour
                 _shared.blackTrophyRoom.Invoke();
                 break;
         }
-        
+
         _shared.cameras[_shared.curCam].enabled = false;
         _shared.curCam = num;
         _shared.cameras[_shared.curCam].enabled = true;
         DragonManageCamara(num, 0); // just for the red dragon
         DragonManageCamara(num, 2); // just for the white dragon
-
     }
-    
+
     /**
      * Setting which camara is the patrolling dragon is in.
      */
@@ -133,6 +146,13 @@ public class GameManager : MonoBehaviour
         for (var i = 0; i < cameras.Length; i++)
         {
             var cam = cameras[i];
+            if (IsVisible(cam, player.gameObject) & player.curCamara != i)
+            {
+                cameras[player.curCamara].enabled = false;
+                player.curCamara = i;
+                cameras[player.curCamara].enabled = true;
+            }
+
             if (!IsVisible(cam, target)) continue;
             curDragon.curCamara = i;
             if (curDragon.curCamara != _shared.player.curCamara) continue;
@@ -164,7 +184,7 @@ public class GameManager : MonoBehaviour
     {
         var curDragon = _shared.dragons[dragonNum];
         if (!curDragon) return;
-            if (curDragon.curCamara == num)
+        if (curDragon.curCamara == num)
         {
             curDragon.patrol = false;
             curDragon.metPlayer = true;
@@ -207,7 +227,7 @@ public class GameManager : MonoBehaviour
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -215,6 +235,6 @@ public class GameManager : MonoBehaviour
     {
         gameOverScreen.SetUp();
     }
-    
+
     #endregion
 }

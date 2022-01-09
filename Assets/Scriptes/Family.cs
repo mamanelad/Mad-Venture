@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class Family : MonoBehaviour
 {
-    public String[] objectiveStrings;
+    public string[] objectiveStrings;
     private bool textIsRed = false;
     private float ExclamationMarkWaiting = 0.5f;
     public int maxExclamationMark;
@@ -22,7 +22,7 @@ public class Family : MonoBehaviour
     public GameManager gameManager;
     public Dragon dragon;
     public Player player;
-    public String dadShouting;
+    public string dadShouting;
     private int exclamationMark = 0;
     public float timeToWait;
 
@@ -48,9 +48,7 @@ public class Family : MonoBehaviour
     private void Awake()
     {
         if (chatBubble)
-        {
-           chatBubble.SetActive(false); 
-        }
+            chatBubble.SetActive(false); 
         
         textMy = GetComponentInChildren<TextMeshPro>();
         _rigidbody = gameObject.GetComponent<Rigidbody2D>();
@@ -60,10 +58,9 @@ public class Family : MonoBehaviour
         _subtitles = text.GetComponent<Subtitles>();
     }
 
-    
-    void Update()
-    {
 
+    private void Update()
+    {
         if (insideTheHouse)
         {
             _meAsAnItem._hingeJoint2D.enabled = false;
@@ -84,10 +81,6 @@ public class Family : MonoBehaviour
         
         Rotate((_subtitles.showStrings == -1 & !_dadShouting) & !_catchingMe);
 
-
-
-        
-
         if (!_encounterWasMade & _sameRoomAsPlayer)
         {
             
@@ -103,7 +96,7 @@ public class Family : MonoBehaviour
                 }
                 if (exclamationMark <= maxExclamationMark)
                 {
-                    var mark = markGenerator();
+                    var mark = MarkGenerator();
                     if (chatBubble)
                     {
                         chatBubble.SetActive(true);
@@ -116,19 +109,18 @@ public class Family : MonoBehaviour
         }
 
 
-        if (_sameRoomAsPlayer & numCam != player.curCamara & !_encounterWasMade)
-        {
-            textMy.text = " ";
-            chatBubble.SetActive(false);
-            _sameRoomAsPlayer = false;
-
-        }
+        if (!(_sameRoomAsPlayer & numCam != player.curCamara & !_encounterWasMade)) return;
+        textMy.text = " ";
+        chatBubble.SetActive(false);
+        _sameRoomAsPlayer = false;
     }
 
+    /**
+     * Transfer the family member to the right place in the house,
+     * and setting the subtitles. 
+     */
     private void GotIntoTheHouse()
     {
-        
-
         insideTheHouse = true;
         gameManager.familyMembersInTheHouse += 1;
         _meAsAnItem._hingeJoint2D.enabled = false;
@@ -161,13 +153,9 @@ public class Family : MonoBehaviour
         _catchingMe = true;
          
         if (_encounterWasMade) return;
-        // _subtitles.textCurrentObjective.text = objectiveStrings[0];
         _encounterWasMade = true;
         _subtitles.dadShouting = false;
-
-
-
-
+        
         _subtitles.currentObjective = objectiveStrings[0];
         _subtitles.curFamilyTextBubble = textMy;
         _subtitles.currentStrings = firstEncounterStrings;
@@ -175,14 +163,11 @@ public class Family : MonoBehaviour
         _subtitles.timeToWait = timeToWait;
 
         _subtitles.chatBubble = chatBubble;
-
-
-        if (gameObject.name == "Son")
-        {
-            _catchingMe = false;
-            var boxCollider2D = gameObject.GetComponent<BoxCollider2D>();
-            boxCollider2D.enabled = false;
-        }
+        
+        if (gameObject.name != "Son") return;
+        _catchingMe = false;
+        var boxCollider2D = gameObject.GetComponent<BoxCollider2D>();
+        boxCollider2D.enabled = false;
     }
 
     private void Rotate(bool state)
@@ -190,11 +175,14 @@ public class Family : MonoBehaviour
         _animator.SetBool("rotate", state);
     }
 
-    private String markGenerator()
+    /**
+     * ExclamationMark generator for the shouting of the family members.
+     */
+    private string MarkGenerator()
     {
        
         var mark = "";
-        for (int i = 0; i < exclamationMark; i++)
+        for (var i = 0; i < exclamationMark; i++)
         {
             mark += "!";
         }

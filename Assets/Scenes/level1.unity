@@ -2842,7 +2842,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 0.83137256}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -3742,10 +3742,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e947ffa953091634daf725b1b4643115, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  goHomeTrigger: {fileID: 0}
-  dragonsprite: {fileID: 1490039213}
+  dragonSprite: {fileID: 1490039213}
   player: {fileID: 1854712228}
-  PlayerP: {fileID: 1854712233}
+  playerP: {fileID: 1854712233}
   mouth: {fileID: 738543408}
   patrol: 1
   patrolPoints:
@@ -26633,6 +26632,11 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 5, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &922885409 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4253100532469327922, guid: d222a3c3b6ec4f24f85224d500d96412, type: 3}
+  m_PrefabInstance: {fileID: 4253100530769958834}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &929841163
 GameObject:
   m_ObjectHideFlags: 0
@@ -28274,7 +28278,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1089998584}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.371231, y: 2.8442535, z: 4.3764353}
+  m_LocalPosition: {x: 11.91, y: 3.75, z: 4.3764353}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 382668245}
@@ -31677,18 +31681,30 @@ PrefabInstance:
     - target: {fileID: 6521441824124531129, guid: db78dfc4c9a3d5746aa4219a0fcd9069, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 5380495657500051461, guid: d105375a03821b04ea3852e75ece093b, type: 3}
+      objectReference: {fileID: 21300000, guid: b7d7d1ed3173f814093d036d66947605, type: 3}
     - target: {fileID: 7281619935163942621, guid: db78dfc4c9a3d5746aa4219a0fcd9069, type: 3}
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7281619935163942621, guid: db78dfc4c9a3d5746aa4219a0fcd9069, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.43564835
+      objectReference: {fileID: 0}
+    - target: {fileID: 7281619935163942621, guid: db78dfc4c9a3d5746aa4219a0fcd9069, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.43564835
+      objectReference: {fileID: 0}
+    - target: {fileID: 7281619935163942621, guid: db78dfc4c9a3d5746aa4219a0fcd9069, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.43564835
+      objectReference: {fileID: 0}
+    - target: {fileID: 7281619935163942621, guid: db78dfc4c9a3d5746aa4219a0fcd9069, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.3
+      value: 6.5033
       objectReference: {fileID: 0}
     - target: {fileID: 7281619935163942621, guid: db78dfc4c9a3d5746aa4219a0fcd9069, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.55
+      value: 1.892
       objectReference: {fileID: 0}
     - target: {fileID: 7281619935163942621, guid: db78dfc4c9a3d5746aa4219a0fcd9069, type: 3}
       propertyPath: m_LocalPosition.z
@@ -32676,7 +32692,7 @@ PrefabInstance:
     - target: {fileID: 6521441824124531129, guid: db78dfc4c9a3d5746aa4219a0fcd9069, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -4857367318145518952, guid: d105375a03821b04ea3852e75ece093b, type: 3}
+      objectReference: {fileID: 21300000, guid: 1bdfbf3037ffe92428ed63d4e99abb5f, type: 3}
     - target: {fileID: 7281619935163942621, guid: db78dfc4c9a3d5746aa4219a0fcd9069, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -34663,7 +34679,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18.7
+  m_fontSize: 30
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -35248,7 +35264,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 0.83137256}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -36088,10 +36104,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e947ffa953091634daf725b1b4643115, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  goHomeTrigger: {fileID: 0}
-  dragonsprite: {fileID: 1988872192}
+  dragonSprite: {fileID: 1988872192}
   player: {fileID: 1854712228}
-  PlayerP: {fileID: 1854712233}
+  playerP: {fileID: 1854712233}
   mouth: {fileID: 214835414}
   patrol: 0
   patrolPoints: []
@@ -39667,6 +39682,14 @@ PrefabInstance:
       propertyPath: PlayerP
       value: 
       objectReference: {fileID: 1854712233}
+    - target: {fileID: 4253100531709739695, guid: d222a3c3b6ec4f24f85224d500d96412, type: 3}
+      propertyPath: playerP
+      value: 
+      objectReference: {fileID: 1854712233}
+    - target: {fileID: 4253100531709739695, guid: d222a3c3b6ec4f24f85224d500d96412, type: 3}
+      propertyPath: dragonSprite
+      value: 
+      objectReference: {fileID: 922885409}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d222a3c3b6ec4f24f85224d500d96412, type: 3}
 --- !u!1001 &4875639218971654842
@@ -39825,6 +39848,10 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 1462263320}
+    - target: {fileID: 5848911088234824393, guid: 484499d81ac37264ba1c75ddbe1a3862, type: 3}
+      propertyPath: homeWhereToPop
+      value: 
+      objectReference: {fileID: 1089998585}
     - target: {fileID: 5848911088234824393, guid: 484499d81ac37264ba1c75ddbe1a3862, type: 3}
       propertyPath: eatenToHousePop
       value: 

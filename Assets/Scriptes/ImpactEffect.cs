@@ -8,6 +8,5 @@ public class ImpactEffect : MonoBehaviour
     public void DestroyObject()
     {
         Destroy(gameObject);
-
     }
 }

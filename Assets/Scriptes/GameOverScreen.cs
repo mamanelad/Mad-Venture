@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameOverScreen : MonoBehaviour
 {
     public float waitUntilShow = 1f;
+    
     public void SetUp()
     {
         Invoke(nameof(ShowScreen), waitUntilShow);
@@ -26,6 +27,5 @@ public class GameOverScreen : MonoBehaviour
     public void MainMenue()
     {
         SceneManager.LoadScene("MainMenue");
-
     }
 }

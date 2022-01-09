@@ -1,25 +1,21 @@
 using System;
-using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Dragon : MonoBehaviour
 {
     #region Fields
-
-    public Triggers goHomeTrigger;
-    private bool _movementBackToNormal = true;
-
-
+    
     //Other Game objects
-    public GameObject dragonsprite;
+    public GameObject dragonSprite;
     public GameObject player;
-    public Player PlayerP;
+    [FormerlySerializedAs("PlayerP")] public Player playerP;
     public GameObject mouth;
 
     //Patrol
     public bool patrol;
     public Transform[] patrolPoints; // Patrol points for the dragon to patrol 
-    private int _currentPatrolIndex = 0;
+    private int _currentPatrolIndex;
     private Transform _currentPatrolPoint;
 
     //Components
@@ -39,15 +35,15 @@ public class Dragon : MonoBehaviour
 
     //General
     public int curCamara;
-    public bool metPlayer = false;
-    private float _time = 0;
+    public bool metPlayer;
+    private float _time;
 
     #endregion
 
     #region Movement
 
-    private bool _returnMovement = false;
-    public bool dragonIsMoving = false;
+    private bool _returnMovement;
+    public bool dragonIsMoving;
     public float timeToWait;
     private Vector2 _movement;
     public float moveSpeed;
@@ -57,17 +53,18 @@ public class Dragon : MonoBehaviour
     #region Player attacking
 
     public int health = 100;
-    public bool dragonIsDead = false;
-    public bool playerIsDead = false;
-    private bool _mouthIsOpen = false;
+    public bool dragonIsDead;
+    public bool playerIsDead;
+    private bool _mouthIsOpen;
 
     #endregion
 
     #region status
 
-    private int _currentStage = 0;
+    private int _currentStage;
     private int _nextStage;
-    private bool _changeState = false;
+    private bool _changeState;
+    private bool _movementBackToNormal = true;
 
     #endregion
 
@@ -76,6 +73,7 @@ public class Dragon : MonoBehaviour
     public GameObject poof;
     public float rotateFrom;
     private static readonly int Rotate1 = Animator.StringToHash("rotate");
+    private static readonly int DeadDragon = Animator.StringToHash("deadDragon");
 
     #endregion
 
@@ -90,9 +88,7 @@ public class Dragon : MonoBehaviour
         //Setting game object components
         _spriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer>();
         _spriteRenderer.sprite = sprites[0];
-
-
-        _spriteAnimator = dragonsprite.GetComponent<Animator>();
+        _spriteAnimator = dragonSprite.GetComponent<Animator>();
         rBDragon = gameObject.GetComponent<Rigidbody2D>();
         _mouthCollider = mouth.GetComponent<PolygonCollider2D>();
         _mouthCollider.isTrigger = true;
@@ -110,11 +106,10 @@ public class Dragon : MonoBehaviour
     {
         if (dragonIsDead)
         {
-            animator.SetTrigger("deadDragon");
+            animator.SetTrigger(DeadDragon);
             return;
         }
-
-
+        
         if (metPlayer)
             Rotate();
 
@@ -123,22 +118,19 @@ public class Dragon : MonoBehaviour
 
         if (dragonIsMoving & metPlayer)
             MoveToPlayer(_movement);
+        
 
-        // if (_changeState)
-        //     StartCoroutine(WaitToStateChange(timeToWait));
-
-        if (_changeState)
-        {
-            _time += Time.deltaTime;
-            if (_time >= timeToWait)
-            {
-                ChangeDragonState();
-                _time = 0;
-            }
-        }
+        if (!_changeState) return;
+        _time += Time.deltaTime;
+        if (!(_time >= timeToWait)) return;
+        ChangeDragonState();
+        _time = 0;
     }
 
-    private void killDragon()
+    /**
+     * This function is called from the dragon animation.
+     */
+    private void KillDragon()
     {
         Instantiate(poof, transform.position, transform.rotation);
         Destroy(gameObject);
@@ -151,7 +143,6 @@ public class Dragon : MonoBehaviour
     private void MoveToPlayer(Vector2 direction)
     {
         rBDragon.MovePosition((Vector2) gameObject.transform.position + (direction * moveSpeed * Time.deltaTime));
-        var newP = rBDragon.position;
         rBDragon.velocity = Vector2.zero;
         Vector2 directionToChangeTo = player.transform.position - transform.position;
         directionToChangeTo.Normalize();
@@ -196,29 +187,27 @@ public class Dragon : MonoBehaviour
 
 
     /**
-     * Setting the right thing to do depends on which gameobjects the dragon
-     * encounteras with.
+     * Setting the right thing to do depends on which game objects the dragon
+     * encounters with.
      */
     private void CollisionAndTrigger(string nameO)
     {
-        PlayerP.currentDragon = gameObject;
-        if (_currentStage == 0 & !playerIsDead)
+        playerP.currentDragon = gameObject;
+        if (!(_currentStage == 0 & !playerIsDead)) return;
+        dragonIsMoving = false;
+        _changeState = true;
+        switch (nameO)
         {
-            dragonIsMoving = false;
-            _changeState = true;
-            switch (nameO)
-            {
-                case "Player":
-                    _nextStage = 1;
-                    _mouthCollider.enabled = true;
-                    _mouthIsOpen = true;
-                    GameManager.PlaySound(2);
-                    break;
-                case "Sword":
-                    _nextStage = 2;
-                    GameManager.PlaySound(5);
-                    break;
-            }
+            case "Player":
+                _nextStage = 1;
+                _mouthCollider.enabled = true;
+                _mouthIsOpen = true;
+                GameManager.PlaySound(2);
+                break;
+            case "Sword":
+                _nextStage = 2;
+                GameManager.PlaySound(5);
+                break;
         }
     }
 
@@ -245,14 +234,12 @@ public class Dragon : MonoBehaviour
      */
     private void ReturnNormal()
     {
-        // print("return normal was called");
         _currentStage = 1;
         _nextStage = 0;
         _mouthCollider.enabled = false;
         _changeState = true;
         if (!_movementBackToNormal)
         {
-            // print("kaka");
             metPlayer = false;
             dragonIsMoving = false;
             _returnMovement = false;
@@ -268,7 +255,7 @@ public class Dragon : MonoBehaviour
 
     /**
      * Changing dragon mode :
-     * sprite, colider , position and values
+     * sprite, collider , position and values
      */
     private void ChangeDragonState()
     {
@@ -279,15 +266,13 @@ public class Dragon : MonoBehaviour
         var changeTo = polygonCollider2Ds[_currentStage];
         changeTo.enabled = true;
         _spriteRenderer.sprite = sprites[_currentStage];
-
-
+        
         if (_returnMovement)
         {
             dragonIsMoving = true;
             _returnMovement = false;
         }
-
-
+        
         var newPosition = player.GetComponent<Rigidbody2D>().position;
         if (_mouthIsOpen)
         {
@@ -301,6 +286,9 @@ public class Dragon : MonoBehaviour
             dragonIsDead = true;
     }
 
+    /**
+     * Take down dragon life.
+     */
     public void TakeDamage(int damage)
     {
         health -= damage;
