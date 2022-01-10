@@ -17,21 +17,66 @@ public class Triggers : MonoBehaviour
     public Player playerG;
     public Transform player;
     public Transform receiver;
-    
+
     #endregion
-    
+
     #region MonoBehaviour
-    
+
     public void Update()
     {
         if (!playerIsOverlapping) return;
+        Transfer();
+    }
+
+    /**
+     * Transfer the items that the player is currently taking.
+     */
+    private void TransferItems(Item currentItem, Vector3 oldPlayerPosition)
+    {
+        var newPlayerPosition = playerG.transform.position;
+        var transform1 = currentItem.transform;
+        var position = transform1.position;
+        var itemOldPosition = position;
+        var distanceX = oldPlayerPosition.x - itemOldPosition.x;
+        var distanceY = oldPlayerPosition.y - itemOldPosition.y;
+        var newItemPosition = new Vector2(newPlayerPosition.x - distanceX, newPlayerPosition.y - distanceY);
+        position = newItemPosition;
+        position -= new Vector3(0, 0, 1);
+        transform1.position = position;
+    }
+
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerIsOverlapping = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerIsOverlapping = false;
+        }
+    }
+
+    private void Transfer()
+    {
         var oldPlayerPosition = playerG.transform.position;
-        var transform1 = transform;
-        Vector2 portalToPlayer = player.position - transform1.position;
-        var dotProduct = Vector2.Dot(transform1.up, portalToPlayer);
-        if (!(dotProduct < 0)) return;
-        var difference = playerG.direction * playerG.size * 2;
-        var position = (Vector2) receiver.position; 
+        if (gameObject.name != "easterEgg")
+        {
+            var transform1 = transform;
+            Vector2 portalToPlayer = player.position - transform1.position;
+            var dotProduct = Vector2.Dot(transform1.up, portalToPlayer);
+            if (!(dotProduct < 0)) return;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        var position = (Vector2) receiver.position;
         player.position = position;
         playerG.curCamara = numCam;
         gameManager.curCam = numCam;
@@ -48,39 +93,6 @@ public class Triggers : MonoBehaviour
             }
         }
     }
-    
-    /**
-     * Transfer the items that the player is currently taking.
-     */
-    private void TransferItems(Item currentItem, Vector3 oldPlayerPosition)
-    {
-        var newPlayerPosition = playerG.transform.position;
-        var transform1 = currentItem.transform;
-        var position = transform1.position;
-        var itemOldPosition = position;
-        var distanceX = oldPlayerPosition.x - itemOldPosition.x;
-        var distanceY = oldPlayerPosition.y - itemOldPosition.y;
-        var newItemPosition = new Vector2(newPlayerPosition.x  - distanceX, newPlayerPosition.y - distanceY );
-        position = newItemPosition;
-        position -= new Vector3 (0, 0, 1);
-        transform1.position = position;
-    }
 
-    public void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            playerIsOverlapping = true;
-        }
-    }
-    
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            playerIsOverlapping = false;
-        }
-    }
-    
     #endregion
 }

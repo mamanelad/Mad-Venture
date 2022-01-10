@@ -1,50 +1,51 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Serialization;
 
 public class Family : MonoBehaviour
 {
+    #region Field
+
     public string[] objectiveStrings;
-    private bool textIsRed = false;
-    private float ExclamationMarkWaiting = 0.5f;
+    private bool _textIsRed;
+    [FormerlySerializedAs("ExclamationMarkWaiting")] public float exclamationMarkWaiting = 0.5f;
     public int maxExclamationMark;
 
     public GameObject chatBubble;
     public TextMeshPro textMy;
     private bool _emptyText;
-
-
+    
     private Rigidbody2D _rigidbody;
     private Item _meAsAnItem;
     public GameManager gameManager;
     public Dragon dragon;
     public Player player;
-    public string dadShouting;
-    private int exclamationMark = 0;
+    [FormerlySerializedAs("dadShouting")] public string dadShoutingString;
+    private int _exclamationMark;
     public float timeToWait;
 
     private bool _sameRoomAsPlayer;
-    private float time;
+    private float _time;
     private Animator _animator;
 
     public TextMeshProUGUI text;
 
-    public bool _dadShouting;
+    [FormerlySerializedAs("_dadShouting")] public bool dadShouting;
     public bool insideTheHouse;
     private Subtitles _subtitles;
 
     public int numCam;
-    private bool _encounterWasMade = false;
+    private bool _encounterWasMade;
     public string[] firstEncounterStrings;
     public string[] lastEncounterStrings;
-
-
+    
     public Transform houseWhereToPop;
-    private bool _catchingMe = false;
+    private bool _catchingMe;
+    private static readonly int Rotate1 = Animator.StringToHash("rotate");
 
+    #endregion
+    
+    #region MonoBehaviour
     private void Awake()
     {
         if (chatBubble)
@@ -54,7 +55,7 @@ public class Family : MonoBehaviour
         _rigidbody = gameObject.GetComponent<Rigidbody2D>();
         _meAsAnItem = GetComponent<Item>();
         _animator = gameObject.GetComponent<Animator>();
-        _animator.SetBool("rotate", true);
+        _animator.SetBool(Rotate1, true);
         _subtitles = text.GetComponent<Subtitles>();
     }
 
@@ -79,22 +80,22 @@ public class Family : MonoBehaviour
             _sameRoomAsPlayer = true;
 
         
-        Rotate((_subtitles.showStrings == -1 & !_dadShouting) & !_catchingMe);
+        Rotate((_subtitles.showStrings == -1 & !dadShouting) & !_catchingMe);
 
         if (!_encounterWasMade & _sameRoomAsPlayer)
         {
             
-            _dadShouting = true;
-            time += Time.deltaTime;
-            if (time >= ExclamationMarkWaiting)
+            dadShouting = true;
+            _time += Time.deltaTime;
+            if (_time >= exclamationMarkWaiting)
             {
-                ExclamationMarkWaiting = timeToWait;
-                if (exclamationMark == maxExclamationMark & !textIsRed )
+                exclamationMarkWaiting = timeToWait;
+                if (_exclamationMark == maxExclamationMark & !_textIsRed )
                 {
                     textMy.color = Color.red;
-                    textIsRed = true;
+                    _textIsRed = true;
                 }
-                if (exclamationMark <= maxExclamationMark)
+                if (_exclamationMark <= maxExclamationMark)
                 {
                     var mark = MarkGenerator();
                     if (chatBubble)
@@ -102,8 +103,8 @@ public class Family : MonoBehaviour
                         chatBubble.SetActive(true);
                     }
 
-                    textMy.text = dadShouting + mark;
-                    time = 0;
+                    textMy.text = dadShoutingString + mark;
+                    _time = 0;
                 }
             }
         }
@@ -149,7 +150,7 @@ public class Family : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        _dadShouting = false;
+        dadShouting = false;
         _catchingMe = true;
          
         if (_encounterWasMade) return;
@@ -172,7 +173,7 @@ public class Family : MonoBehaviour
 
     private void Rotate(bool state)
     {
-        _animator.SetBool("rotate", state);
+        _animator.SetBool(Rotate1, state);
     }
 
     /**
@@ -182,12 +183,14 @@ public class Family : MonoBehaviour
     {
        
         var mark = "";
-        for (var i = 0; i < exclamationMark; i++)
+        for (var i = 0; i < _exclamationMark; i++)
         {
             mark += "!";
         }
 
-        exclamationMark++;
+        _exclamationMark++;
         return mark;
     }
+    
+    #endregion
 }

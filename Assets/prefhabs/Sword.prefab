@@ -166,6 +166,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 20
-  damage: 50
+  damage: 20
   swordRigidbody2D: {fileID: 8205070812762894241}
   impactEffect: {fileID: 1130260317316426395, guid: 87626449c66e4df4eaededaec160796f, type: 3}
