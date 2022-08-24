@@ -1,9 +1,7 @@
 
 <h1 align="center">
-  <img src="Images/MetroidBanner.png"/>
+  <img src="Images/main_small.jpg"/>
   
- ![_alt text_](https://img.shields.io/badge/Platforms-windows_|_macos-blue??style=for-the-badge)
-
   </h1>
 <h3 align="center">  
   
